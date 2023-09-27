@@ -7,9 +7,11 @@ import javax.persistence.Table;
 @Table(name = "prescriptions")
 public class Prescription {
 
-    private Long doctorId;
+    private Long id;
 
-    private Long patientId;
+    private Doctor doctor;
+
+    private Patient patient;
 
     private String details;
 }
