@@ -117,4 +117,9 @@ Fields:
 
 
 
+## Annotations
+
+How to implement Many to Many Tables
+- https://www.baeldung.com/jpa-many-to-many
+
 
