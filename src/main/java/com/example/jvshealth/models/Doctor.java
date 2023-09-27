@@ -1,6 +1,7 @@
 package com.example.jvshealth.models;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Table(name = "doctors")
@@ -16,6 +17,9 @@ public class Doctor {
 
     @Column
     private String lastName;
+
+    @OneToMany(mappedBy = "doctor")
+    private Set<Prescription> prescriptionSet;
 
     public Doctor() {
     }

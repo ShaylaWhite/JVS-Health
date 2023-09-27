@@ -20,7 +20,7 @@ public class Patient {
     private LocalDate birthDate;
 
     @OneToMany(mappedBy = "patient")
-    private Set<Prescription> prescription;
+    private Set<Prescription> prescriptionSet;
 
     public Patient() {
     }
