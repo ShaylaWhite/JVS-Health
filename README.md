@@ -77,4 +77,8 @@ To understand the functionality of the REST API and its endpoints, refer to the 
 | POST         | /api/doctors/patients/{patientId}/prescriptions | Create a new prescritption for a patient (Admin, requires JWT) | Admin |
 | POST         | /api/doctors/patients/{patientId}/shots | Create a new shot for a patient (Admin, requires JWT) | Admin |
 
+## ERD Diagram
+
+<img src="/JVS Health.png" alt="JVS Health ERD Diagram" title="JVS Health ERD Diagram">
+
 
