@@ -2,6 +2,7 @@ package com.example.jvshealth.models;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -19,8 +20,8 @@ public class Patient {
     @Column
     private LocalDate birthDate;
 
-    @OneToMany(mappedBy = "patient")
-    private Set<Prescription> prescriptionSet;
+    @OneToMany(mappedBy = "patient", fetch = FetchType.LAZY)
+    private List<Prescription> prescriptionList;
 
     public Patient() {
     }
