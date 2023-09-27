@@ -15,6 +15,7 @@ The API works with the following models:
 ## User Stories
 
 ### User Story 1: Doctor Registration
+
 As a Guest User, I want to be able to register for an account with a username and password, so I can access the JVS's features.
 
 **Acceptance Criteria**:
@@ -24,6 +25,7 @@ As a Guest User, I want to be able to register for an account with a username an
 - Upon successful registration, I receive a confirmation message.
 
 ### User Story 2: Doctor Login
+
 As a Registered User, I want to log in and obtain a JWT token with my username and password, so I can access authenticated features.
 
  **Acceptance Criteria**:
@@ -33,14 +35,16 @@ As a Registered User, I want to log in and obtain a JWT token with my username a
 - Upon successful login, I receive a JWT token that I can use for authentication in subsequent requests.
 
 ### User Story 3: Browse Patients
+
 As a Provider, I want to browse the list of patients by name, ID (primary key), date of birth, and flu shot ID to efficiently manage patients in the system.
 
  **Acceptance Criteria**:
 
-I can access the /api/doctors/patients endpoint.
-I can view a list of all my patients.
+- I can access the /api/doctors/patients endpoint.
+- I can view a list of all my patients.
 
 ### User Story 4: Assign Flu Shots
+
 As a Provider, I want to assign flu shots from the database to my patients.
 
  **Acceptance Criteria**:
@@ -52,7 +56,8 @@ As a Provider, I want to assign flu shots from the database to my patients.
 
 
 ### User Story 5: Doctor Update Patient's Information
-As a Provider, I want to manage patients in the system, including adding, updating, and deleting patient information.
+
+ As a Provider, I want to manage patients in the system, including adding, updating, and deleting patient information.
 
 **Acceptance Criteria**:
 
