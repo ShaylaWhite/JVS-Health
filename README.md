@@ -113,6 +113,8 @@ Fields:
 
 ## ERD Diagram
 
+<img src="/JVS Health.png" alt="JVS Health ERD Diagram" title="JVS Health ERD Diagram">
+
 
 
 
