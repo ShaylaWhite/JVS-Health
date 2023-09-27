@@ -109,10 +109,10 @@ Fields:
 **Assignment Table:**
 
 Fields:
--assignment_id (Primary Key): Unique identifier for each assignment.
--patient_id (Foreign Key): References the patient_id in the Patient Table, indicating which patient received the flu shot.
--flu_shot_id (Foreign Key): References the flu_shot_id in the Flu Shot Table, indicating which flu shot was assigned to the patient.
--assignment_date: The date when the assignment was made.
+- assignment_id (Primary Key): Unique identifier for each assignment.
+- patient_id (Foreign Key): References the patient_id in the Patient Table, indicating which patient received the flu shot.
+- flu_shot_id (Foreign Key): References the flu_shot_id in the Flu Shot Table, indicating which flu shot was assigned to the patient.
+- assignment_date: The date when the assignment was made.
 
 ## ERD Diagram
 
