@@ -83,6 +83,36 @@ To interact with the JVS-Health API, you can use the following endpoints:
 | PUT          | `/api/doctors/patients/{patientId}`    | Update patient details (Admin, requires JWT)                   | Admin   |
 | DELETE       | `/api/doctors/patients/{patientId}`    | Delete patient details (Admin, requires JWT)                   | Admin   |
 
+## ERD Tables
+
+**Doctor Table:**
+Fields:
+- doctor_id (Primary Key): Unique identifier for each doctor.
+- username: The username of the doctor for authentication.
+- password: The hashed password for authentication.
+
+
+**Patient Table:**
+
+Fields:
+- patient_id (Primary Key): Unique identifier for each patient.
+- name: The name of the patient.
+- date_of_birth: The date of birth of the patient.
+
+**Flu Shot Table:**
+
+Fields:
+- flu_shot_id (Primary Key): Unique identifier for each flu shot.
+- name: The name or identifier of the flu shot.
+- availability_status: Indicates whether the flu shot is available or assigned to a patient.
+
+**Assignment Table:**
+
+Fields:
+-assignment_id (Primary Key): Unique identifier for each assignment.
+-patient_id (Foreign Key): References the patient_id in the Patient Table, indicating which patient received the flu shot.
+-flu_shot_id (Foreign Key): References the flu_shot_id in the Flu Shot Table, indicating which flu shot was assigned to the patient.
+-assignment_date: The date when the assignment was made.
 
 ## ERD Diagram
 
