@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class DoctorDetailService implements UserDetailsService {
+
+    private DoctorService doctorService;
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Doctor doctor = DoctorService.findUserByEmailAddress;
