@@ -2,6 +2,8 @@ package com.example.jvshealth.controller;
 
 
 import com.example.jvshealth.models.Doctor;
+import com.example.jvshealth.request.LoginRequest;
+import com.example.jvshealth.response.LoginResponse;
 import com.example.jvshealth.service.DoctorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -37,7 +39,7 @@ public Doctor createDoctor(@RequestBody Doctor doctorObject) {
     // LOGIN USER (POST =
     @PostMapping(path = "/login/") // http://localhost:9092/auth/doctors/login/
     public ResponseEntity<LoginResponse> loginUser(@RequestBody LoginRequest loginRequest) {
-        Optional<String> jwtToken = userService.loginUser(loginRequest);
+        Optional<String> jwtToken = doctorService.loginDoctor(loginRequest);
         if (jwtToken.isPresent()) {
             return ResponseEntity.ok(new LoginResponse(jwtToken.get()));
         } else {
