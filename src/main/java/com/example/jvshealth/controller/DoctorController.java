@@ -31,11 +31,10 @@ static HashMap<String, Object> message = new HashMap<>();
 //CREATE USER
 //CREATE USER(POST =)
 @PostMapping("/register") // http://localhost:9092/auth/users/register/
-public Doctor createDoctor(@RequestBody Doctor userObject) {
+public Doctor createDoctor(@RequestBody Doctor doctorObject) {
     return doctorService.createDoctor(doctorObject);
 }
 
 
-    @PostMapping(path = "login/")
-    <ResponseEnitity>
+
 }

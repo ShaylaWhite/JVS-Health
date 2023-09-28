@@ -33,7 +33,7 @@ public class DoctorService {
         this.authenticationManager = authenticationManager;
     }
 
-    public Doctor createUser(Doctor doctorObject) {
+    public Doctor createDoctor(Doctor doctorObject) {
         if (!doctorRepository.existsByEmailAddress(doctorObject.getEmailAddress())) {
             doctorObject.setPassword(passwordEncoder.encode(doctorObject.getPassword()));
             return doctorRepository.save(doctorObject);
