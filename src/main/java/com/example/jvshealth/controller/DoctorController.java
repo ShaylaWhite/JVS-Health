@@ -32,11 +32,13 @@ static HashMap<String, Object> message = new HashMap<>();
 
 //CREATE USER
 
-@PostMapping("/register") // http://localhost:9092/auth/doctors/register/
-public Doctor createDoctor(@RequestBody Doctor doctorObject) {
-    return doctorService.createDoctor(doctorObject);
-}
-    // LOGIN USER (POST =
+    @PostMapping("/register") // http://localhost:9092/auth/doctors/register/
+    public Doctor createDoctor(@RequestBody Doctor doctorObject) {
+        return doctorService.createDoctor(doctorObject);
+    }
+
+
+// LOGIN USER (POST)
     @PostMapping(path = "/login/") // http://localhost:9092/auth/doctors/login/
     public ResponseEntity<LoginResponse> loginUser(@RequestBody LoginRequest loginRequest) {
         Optional<String> jwtToken = doctorService.loginDoctor(loginRequest);
