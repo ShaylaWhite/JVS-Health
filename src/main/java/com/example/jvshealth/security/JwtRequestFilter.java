@@ -1,6 +1,5 @@
 package com.example.jvshealth.security;
 
-import com.example.jvshealth.service.DoctorDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
