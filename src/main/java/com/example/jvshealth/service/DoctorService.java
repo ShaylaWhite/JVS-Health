@@ -1,5 +1,6 @@
 package com.example.jvshealth.service;
 
+import com.example.jvshealth.exception.InformationExistException;
 import com.example.jvshealth.models.Doctor;
 import com.example.jvshealth.repository.DoctorRepository;
 import com.example.jvshealth.security.JWTUtils;
@@ -30,6 +31,15 @@ public class DoctorService {
         this.passwordEncoder = passwordEncoder;
         this.jwtUtils = jwtUtils;
         this.authenticationManager = authenticationManager;
+    }
+
+    public Doctor createUser(Doctor doctorObject) {
+        if (!doctorRepository.existsByEmailAddress(doctorObject.getEmailAddress())) {
+            doctorObject.setPassword(passwordEncoder.encode(doctorObject.getPassword()));
+            return doctorRepository.save(doctorObject);
+        } else {
+            throw new InformationExistException("user with email address " + doctorObject.getEmailAddress() + " already exists");
+        }
     }
 
 }
