@@ -56,6 +56,14 @@ public class Patient {
         this.birthDate = birthDate;
     }
 
+    public List<Prescription> getPrescriptionList() {
+        return prescriptionList;
+    }
+
+    public void setPrescriptionList(List<Prescription> prescriptionList) {
+        this.prescriptionList = prescriptionList;
+    }
+
     @Override
     public String toString() {
         return "Patient{" +
