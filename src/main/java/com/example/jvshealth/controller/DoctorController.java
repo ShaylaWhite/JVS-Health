@@ -16,9 +16,9 @@ import java.util.Optional;
 import java.util.HashMap;
 
 @RestController
-@RequestMapping(path = "/auth/doctors/") //http:localhost
+@RequestMapping(path = "/auth/doctors/")    // http://localhost:9092/auth
 public class DoctorController {
-    @Autowired
+
     private DoctorService doctorService;
 
     @Autowired
@@ -29,7 +29,7 @@ static HashMap<String, Object> result = new HashMap<>();
 static HashMap<String, Object> message = new HashMap<>();
 
 //CREATE USER
-//CREATE USER(POST =)
+
 @PostMapping("/register") // http://localhost:9092/auth/users/register/
 public Doctor createDoctor(@RequestBody Doctor doctorObject) {
     return doctorService.createDoctor(doctorObject);
