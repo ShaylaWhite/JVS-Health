@@ -26,7 +26,7 @@ public class MyDoctorDetails implements UserDetails {
     }
 
     @Override
-    public String getEmailAddress() {
+    public String getUsername() {
         return doctor.getEmailAddress();
     }
 

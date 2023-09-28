@@ -102,6 +102,5 @@ public class Doctor {
     }
 
 
-    public String getUsername() {
-    }
+
 }
