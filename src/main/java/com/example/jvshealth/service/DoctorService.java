@@ -4,11 +4,17 @@ import com.example.jvshealth.exception.InformationExistException;
 import com.example.jvshealth.models.Doctor;
 import com.example.jvshealth.repository.DoctorRepository;
 import com.example.jvshealth.security.JWTUtils;
+import com.example.jvshealth.security.MyDoctorDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class DoctorService {
@@ -41,6 +47,17 @@ public class DoctorService {
             throw new InformationExistException("user with email address " + doctorObject.getEmailAddress() + " already exists");
         }
     }
-
+    public Optional<String> loginUser(LoginRequest loginRequest) {
+        UsernamePasswordAuthenticationToken authenticationToken = new
+                UsernamePasswordAuthenticationToken(loginRequest.getEmailAddress(), loginRequest.getPassword());
+        try {
+            Authentication authentication = authenticationManager.authenticate(authenticationToken);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            MyDoctorDetails myDoctorDetails = (MyDoctorDetails) authentication.getPrincipal();
+            return Optional.of(jwtUtils.generateJwtToken(myDoctorDetails));
+        } catch (Exception e) {
+            return Optional.empty();
+        }
+    }
 
 }
