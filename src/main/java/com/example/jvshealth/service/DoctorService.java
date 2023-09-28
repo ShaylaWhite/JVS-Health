@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class DoctorService {
+    public static Doctor findUserByEmailAddress;
     private final  DoctorRepository doctorRepository;
     private final PasswordEncoder passwordEncoder;
     private final JWTUtils jwtUtils;

@@ -14,5 +14,6 @@ public class DoctorDetailService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Doctor doctor = DoctorService.findUserByEmailAddress;
+        return new MyDoctorDetails(doctor);
     }
 }
