@@ -20,15 +20,12 @@ import java.util.Optional;
 @Service
 public class DoctorService {
 
-    public static Doctor findDoctorByEmailAddress;
-    private final  DoctorRepository doctorRepository;
+//    public static Doctor findDoctorByEmailAddress;
+    private final DoctorRepository doctorRepository;
     private final PasswordEncoder passwordEncoder;
     private final JWTUtils jwtUtils;
     private final AuthenticationManager authenticationManager;
 
-    public Doctor findDoctorByEmailAddress(String emailAddress){
-        return doctorRepository.findDoctorByEmailAddress(emailAddress);
-    }
 
     @Autowired
     public DoctorService(DoctorRepository doctorRepository, @Lazy PasswordEncoder passwordEncoder,
@@ -61,4 +58,7 @@ public class DoctorService {
         }
     }
 
+    public Doctor findDoctorByEmailAddress(String emailAddress){
+        return doctorRepository.findDoctorByEmailAddress(emailAddress);
+    }
 }

@@ -43,6 +43,10 @@ public class Doctor {
 
     }
 
+    public Doctor() {
+
+    }
+
 
     public Long getId() {
         return id;
