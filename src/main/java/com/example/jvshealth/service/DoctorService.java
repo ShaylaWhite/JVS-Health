@@ -3,6 +3,7 @@ package com.example.jvshealth.service;
 import com.example.jvshealth.exception.InformationExistException;
 import com.example.jvshealth.models.Doctor;
 import com.example.jvshealth.repository.DoctorRepository;
+import com.example.jvshealth.request.LoginRequest;
 import com.example.jvshealth.security.JWTUtils;
 import com.example.jvshealth.security.MyDoctorDetails;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +48,7 @@ public class DoctorService {
             throw new InformationExistException("user with email address " + doctorObject.getEmailAddress() + " already exists");
         }
     }
-    public Optional<String> loginUser(LoginRequest loginRequest) {
+    public Optional<String> loginDoctor(LoginRequest loginRequest) {
         UsernamePasswordAuthenticationToken authenticationToken = new
                 UsernamePasswordAuthenticationToken(loginRequest.getEmailAddress(), loginRequest.getPassword());
         try {
