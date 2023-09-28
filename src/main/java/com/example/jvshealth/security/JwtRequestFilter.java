@@ -16,4 +16,11 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     public void setDoctorDetailService(DoctorDetailService doctorDetailService) {
         this.doctorDetailService = doctorDetailService;
     }
+
+    @Autowired
+    public void setJwtUtils(JWTUtils jwtUtils) {
+        this.jwtUtils = jwtUtils;
+    }
+
+
 }
