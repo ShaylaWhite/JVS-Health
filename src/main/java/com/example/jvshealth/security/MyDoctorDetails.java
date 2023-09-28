@@ -7,4 +7,7 @@ public class MyDoctorDetails implements UserDetails {
 
     private final Doctor doctor;
 
+    public MyDoctorDetails(Doctor doctor) {
+        this.doctor = doctor
+    }
 }
