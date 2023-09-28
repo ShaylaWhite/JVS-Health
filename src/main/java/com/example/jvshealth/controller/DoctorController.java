@@ -13,6 +13,11 @@ import java.util.HashMap;
 public class DoctorController {
     @Autowired
     private DoctorService doctorService;
+
+    @Autowired
+    public void setDoctorService(DoctorService doctorService) {
+        this.doctorService = doctorService;
+    }
 static HashMap<String, Object> result = new HashMap<>();
 static HashMap<String, Object> message = new HashMap<>();
 
