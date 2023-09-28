@@ -1,8 +1,11 @@
 package com.example.jvshealth.models;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+
 import javax.persistence.*;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "doctors")
@@ -19,16 +22,25 @@ public class Doctor {
     @Column
     private String lastName;
 
-    @OneToMany(mappedBy = "doctor", fetch = FetchType.LAZY)
+    @Column(unique = true)
+    private String emailAddress;
+
+    @Column
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private String password;
+
+    @OneToMany(mappedBy = "doctor")
+    @LazyCollection(LazyCollectionOption.FALSE)
     private List<Prescription> prescriptionList;
 
-    public Doctor() {
-    }
 
-    public Doctor(Long id, String firstName, String lastName) {
+
+    public Doctor(Long id, String firstName, String lastName, String emailAddress) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.emailAddress = emailAddress;
+
     }
 
     public Long getId() {
@@ -55,21 +67,20 @@ public class Doctor {
         this.lastName = lastName;
     }
 
+    public String getEmailAddress() {
+        return emailAddress;
+    }
+
+    public void setEmailAddress(String emailAddress) {
+        this.emailAddress = emailAddress;
+    }
+
     public List<Prescription> getPrescriptionList() {
         return prescriptionList;
     }
 
     public void setPrescriptionList(List<Prescription> prescriptionList) {
         this.prescriptionList = prescriptionList;
-    }
-
-    @Override
-    public String toString() {
-        return "Doctor{" +
-                "id=" + id +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                '}';
     }
 
     public String getPassword() {
@@ -80,5 +91,16 @@ public class Doctor {
     public void setPassword(String password) {
         this.password = password;
     }
+    @Override
+    public String toString() {
+        return "Doctor{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", emailAddress='" + emailAddress + '\'' +
+                '}';
+    }
+
+
 
 }
