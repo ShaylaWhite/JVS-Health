@@ -8,16 +8,16 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
-public class DoctorDetailService implements UserDetailsService {
+public class MyDoctorDetailsService implements UserDetailsService {
 
     private DoctorService doctorService;
 
-    public DoctorDetailService(DoctorService doctorService) {
+    public MyDoctorDetailsService(DoctorService doctorService) {
         this.doctorService = doctorService;
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String emailAddress) throws UsernameNotFoundException {
         Doctor doctor = DoctorService.findDoctorByEmailAddress;
         return new MyDoctorDetails(doctor);
     }

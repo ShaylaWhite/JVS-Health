@@ -18,46 +18,38 @@ import java.util.logging.Logger;
 
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
-    Logger logger = Logger.getLogger(JwtRequestFilter.class.getName());
-    private DoctorDetailService doctorDetailService;
+
+    @Autowired
+    private MyDoctorDetailsService myDoctorDetailsService;
+
+    @Autowired
     private JWTUtils jwtUtils;
-
-    @Autowired
-    public void setDoctorDetailService(DoctorDetailService doctorDetailService) {
-        this.doctorDetailService = doctorDetailService;
-    }
-
-    @Autowired
-    public void setJwtUtils(JWTUtils jwtUtils) {
-        this.jwtUtils = jwtUtils;
-    }
 
     private String parseJwt(HttpServletRequest request) {
         String headerAuth = request.getHeader("Authorization");
-        // Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXJlc2gyQGdhLmNvbSIsImlhdCI6MTY5NDgwMDAzNiwiZXhwIjoxNjk0ODg2NDM2fQ.z3smvkvDJqOYz7699UjvH5JQ51MuWL-KXffegc1UxWU
-        if (StringUtils.hasLength(headerAuth) && headerAuth.startsWith("Bearer")) {
-            return headerAuth.substring(7);
+        if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer ")) {
+            return headerAuth.substring(7, headerAuth.length());
         }
-        logger.info("No header");
         return null;
     }
+    // Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXJlc2gyQGdhLmNvbSIsImlhdCI6MTY5NDgwMDAzNiwiZXhwIjoxNjk0ODg2NDM2fQ.z3smvkvDJqOYz7699UjvH5JQ51MuWL-KXffegc1UxWU
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
         try {
             String jwt = parseJwt(request);
             if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
                 String username = jwtUtils.getUserNameFromJwtToken(jwt);
-                UserDetails userDetails = this.doctorDetailService.loadUserByUsername(username); // Use the 'username' variable
-                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                UserDetails userDetails = this.myDoctorDetailsService.loadUserByUsername(username);
+                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                        userDetails, null, userDetails.getAuthorities());
+                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         } catch (Exception e) {
-            logger.info("cannot set user authentication token");
+            logger.error("Cannot set user authentication: {}", e);
         }
         filterChain.doFilter(request, response);
     }
-
-
 }

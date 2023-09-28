@@ -26,7 +26,7 @@ public class DoctorService {
     private final JWTUtils jwtUtils;
     private final AuthenticationManager authenticationManager;
 
-    public Doctor findUserByEmailAddress(String emailAddress){
+    public Doctor findDoctorByEmailAddress(String emailAddress){
         return doctorRepository.findDoctorByEmailAddress(emailAddress);
     }
 
