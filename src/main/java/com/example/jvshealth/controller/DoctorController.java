@@ -1,6 +1,7 @@
 package com.example.jvshealth.controller;
 
 
+import com.example.jvshealth.models.Doctor;
 import com.example.jvshealth.service.DoctorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,6 +29,11 @@ static HashMap<String, Object> result = new HashMap<>();
 static HashMap<String, Object> message = new HashMap<>();
 
 //CREATE USER
+//CREATE USER(POST =)
+@PostMapping("/register") // http://localhost:9092/auth/users/register/
+public Doctor createDoctor(@RequestBody Doctor userObject) {
+    return doctorService.createDoctor(doctorObject);
+}
 
 
     @PostMapping(path = "login/")
