@@ -11,18 +11,19 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class DoctorService {
-    public static Doctor findUserByEmailAddress;
+
+    public static Doctor findDoctorByEmailAddress;
     private final  DoctorRepository doctorRepository;
     private final PasswordEncoder passwordEncoder;
     private final JWTUtils jwtUtils;
     private final AuthenticationManager authenticationManager;
 
     public Doctor findUserByEmailAddress(String emailAddress){
-        return doctorRepository.findUserByEmailAddress(emailAddress);
+        return doctorRepository.findDoctorByEmailAddress(emailAddress);
     }
 
     @Autowired
-    public DoctorService(DoctorRepository DoctorRepository, @Lazy PasswordEncoder passwordEncoder,
+    public DoctorService(DoctorRepository doctorRepository, @Lazy PasswordEncoder passwordEncoder,
                        JWTUtils jwtUtils,
                        @Lazy AuthenticationManager authenticationManager) {
         this.doctorRepository = doctorRepository;
