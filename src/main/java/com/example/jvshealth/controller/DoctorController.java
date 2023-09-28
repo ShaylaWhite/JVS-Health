@@ -30,10 +30,20 @@ static HashMap<String, Object> message = new HashMap<>();
 
 //CREATE USER
 
-@PostMapping("/register") // http://localhost:9092/auth/users/register/
+@PostMapping("/register") // http://localhost:9092/auth/doctors/register/
 public Doctor createDoctor(@RequestBody Doctor doctorObject) {
     return doctorService.createDoctor(doctorObject);
 }
+    // LOGIN USER (POST =
+    @PostMapping(path = "/login/") // http://localhost:9092/auth/doctors/login/
+    public ResponseEntity<LoginResponse> loginUser(@RequestBody LoginRequest loginRequest) {
+        Optional<String> jwtToken = userService.loginUser(loginRequest);
+        if (jwtToken.isPresent()) {
+            return ResponseEntity.ok(new LoginResponse(jwtToken.get()));
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new LoginResponse("Authentication failed"));
+        }
+    }
 
 
 
