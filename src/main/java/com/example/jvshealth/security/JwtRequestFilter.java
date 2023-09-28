@@ -48,8 +48,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             String jwt = parseJwt(request);
             if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
                 String username = jwtUtils.getUserNameFromJwtToken(jwt);
-                MyDoctorDetails myDoctorDetails = this.doctorDetailService.loadUserByUsername(username); // email address
-                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                MyDoctorDetails myDoctorDetails = (MyDoctorDetails) this.doctorDetailService.loadUserByUsername(username); // email address
+                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(myDoctorDetails, null, myDoctorDetails.getAuthorities());
                 authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
             }
