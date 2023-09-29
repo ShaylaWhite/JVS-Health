@@ -1,7 +1,9 @@
 package com.example.jvshealth.service;
 
 import com.example.jvshealth.exception.InformationExistException;
+import com.example.jvshealth.exception.InformationNotFoundException;
 import com.example.jvshealth.models.Doctor;
+import com.example.jvshealth.models.Patient;
 import com.example.jvshealth.repository.DoctorRepository;
 import com.example.jvshealth.request.LoginRequest;
 import com.example.jvshealth.security.JWTUtils;
@@ -15,6 +17,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -61,4 +64,14 @@ public class DoctorService {
     public Doctor findDoctorByEmailAddress(String emailAddress){
         return doctorRepository.findDoctorByEmailAddress(emailAddress);
     }
+
+    public List<Patient> getAllPatients(Long doctorId) {
+        Optional<Doctor> doctorOptional = doctorRepository.findById(doctorId);
+        if (doctorOptional.isPresent()) {
+            return doctorOptional.get().getPatientList();
+        } else {
+            throw new InformationNotFoundException("Doctor with id " + doctorId + " not found");
+        }
+    }
+
 }
