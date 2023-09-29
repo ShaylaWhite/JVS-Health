@@ -7,7 +7,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.HashSet;
 
-public record MyDoctorDetails(Doctor doctor) implements UserDetails {
+public class MyDoctorDetails implements UserDetails {
+
+    private final Doctor doctor;
+
+    public MyDoctorDetails(Doctor doctor) {
+        this.doctor = doctor;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -42,5 +48,9 @@ public record MyDoctorDetails(Doctor doctor) implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public Doctor getDoctor() {
+        return doctor;
     }
 }
