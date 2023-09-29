@@ -9,5 +9,5 @@ import java.time.LocalDate;
 @Repository
 public interface PatientRepository extends JpaRepository<Patient, Long> {
 
-    Patient findByDoctorId(Long doctorId, String patientName, LocalDate patientDOB);
+    Patient findByDoctorIdAndNameAndBirthDate(Long doctorId, String patientName, LocalDate patientDOB);
 }

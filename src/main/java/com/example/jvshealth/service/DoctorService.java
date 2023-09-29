@@ -72,18 +72,16 @@ public class DoctorService {
     public Doctor findDoctorByEmailAddress(String emailAddress){
         return doctorRepository.findDoctorByEmailAddress(emailAddress);
     }
+    
 
+    //http://localhost:9092/api/doctors/1/patients/
     public Optional<Patient> createPatientDoctor(Long doctorId, Patient patientObject) {
-        Patient patient = patientRepository.findByDoctorId(getCurrentLoggedInDoctor().getId(), patientObject.getName(), patientObject.getBirthDate());
+        Patient patient = patientRepository.findByDoctorIdAndNameAndBirthDate(getCurrentLoggedInDoctor().getId(), patientObject.getName(), patientObject.getBirthDate());
         if (patient != null) {
             throw new InformationExistException("Patient already exists and is a patient of Doctor with id " + doctorId);
         } else {
-            patient.setDoctor(getCurrentLoggedInDoctor());
+            patientObject.setDoctor(getCurrentLoggedInDoctor());
             return Optional.of(patientRepository.save(patientObject));
         }
     }
-
-//    public List<Patient> getAllPatients(Long doctorId) {
-//        return null;
-//    }
 }
