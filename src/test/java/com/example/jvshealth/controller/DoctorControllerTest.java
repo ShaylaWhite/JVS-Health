@@ -2,59 +2,59 @@ package com.example.jvshealth.controller;
 
 import com.example.jvshealth.models.Doctor;
 import com.example.jvshealth.repository.DoctorRepository;
+import com.example.jvshealth.request.LoginRequest;
+import com.example.jvshealth.response.LoginResponse;
 import com.example.jvshealth.service.DoctorService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Before;
 import org.junit.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.util.Optional;
+
 import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@RunWith(MockitoJUnitRunner.class)
-@WebMvcTest(DoctorController.class)
+@RunWith(SpringRunner.class)
+@SpringBootTest
+@AutoConfigureMockMvc
+@ComponentScan(basePackages = "com.example")
 public class DoctorControllerTest {
 
-    @InjectMocks
+    @Autowired
     @MockBean
     private DoctorService doctorService;
 
+    @InjectMocks
+    private DoctorController doctorController;
+
     @Mock
     private DoctorRepository doctorRepository;
-
-    @Autowired
-    private ObjectMapper objectMapper;
 
     @Autowired
     private MockMvc mockMvc;
 
     @Mock
     private PasswordEncoder passwordEncoder;
-
-    @Before
-    public void setup() {
-        MockitoAnnotations.initMocks(this); //without this you will get NPE
-    }
-
 
     Doctor RECORD_1 = new Doctor(1L, "Merrill", "Huang", "merrill@ga.com");
 
@@ -64,13 +64,11 @@ public class DoctorControllerTest {
 
     @Test
     public void createDoctor() throws Exception {
-        when(doctorService.createDoctor(RECORD_1)).thenReturn(RECORD_1);
-        MockHttpServletRequestBuilder mockRequest = MockMvcRequestBuilders.post("/auth/doctors/register/")
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON)
-                .content(this.objectMapper.writeValueAsString(RECORD_1));
+        when(doctorService.createDoctor(Mockito.any(Doctor.class))).thenReturn(RECORD_1);
 
-        mockMvc.perform(mockRequest)
+        mockMvc.perform(MockMvcRequestBuilders.post("/auth/doctors/register/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(RECORD_1)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", notNullValue()))
                 .andExpect(jsonPath("$.id").value((RECORD_1.getId())))
@@ -82,6 +80,18 @@ public class DoctorControllerTest {
     }
 
     @Test
-    public void loginUser() {
+    public void loginUser() throws Exception {
+        LoginRequest request = new LoginRequest();
+        request.setEmailAddress("suresh123@gmail.com");
+        request.setPassword("suresh123");
+        Optional<String> token = Optional.of("eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdWVyc2gxMjNAZ21haWwuY29tIiwiaWF0IjoxNjk2MDA4NTg5LCJleHAiOjE2OTYwOTQ5ODl9.nJDx67WgI5JZiFL_LFz4uFxFVgOR_nVPMCbrcY8Dcx8");
+        when(doctorService.loginDoctor(Mockito.any(LoginRequest.class))).thenReturn(token);
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/auth/doctors/login/")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.jwt").value(token.get()))
+                .andDo(print());;
     }
 }
