@@ -1,5 +1,7 @@
 package com.example.jvshealth.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.List;
@@ -22,6 +24,11 @@ public class Patient {
 
     @OneToMany(mappedBy = "patient", fetch = FetchType.LAZY)
     private List<Prescription> prescriptionList;
+
+    @ManyToOne
+    @JoinColumn(name = "doctor_id")
+    @JsonIgnore
+    private Doctor doctor;
 
     public Patient() {
     }
@@ -62,6 +69,14 @@ public class Patient {
 
     public void setPrescriptionList(List<Prescription> prescriptionList) {
         this.prescriptionList = prescriptionList;
+    }
+
+    public Doctor getDoctor() {
+        return doctor;
+    }
+
+    public void setDoctor(Doctor doctor) {
+        this.doctor = doctor;
     }
 
     @Override

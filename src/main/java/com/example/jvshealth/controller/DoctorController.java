@@ -1,54 +1,67 @@
 package com.example.jvshealth.controller;
 
-
-import com.example.jvshealth.models.Doctor;
-import com.example.jvshealth.request.LoginRequest;
-import com.example.jvshealth.response.LoginResponse;
+import com.example.jvshealth.models.Patient;
 import com.example.jvshealth.service.DoctorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Optional;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
 
 @RestController
-@RequestMapping(path = "/auth/doctors/")    // http://localhost:9092/auth
+@RequestMapping(path = "/api/doctors/")
 public class DoctorController {
 
     private DoctorService doctorService;
+
+//    private PatientService patientService;
+
+//    private PrescriptionService prescriptionService;
 
     @Autowired
     public void setDoctorService(DoctorService doctorService) {
         this.doctorService = doctorService;
     }
-static HashMap<String, Object> result = new HashMap<>();
-static HashMap<String, Object> message = new HashMap<>();
 
-//CREATE USER
+//    @Autowired
+//    public void setPatientService(PatientService patientService) {
+//        this.patientService = patientService;
+//    }
+//
+//    @Autowired
+//    public void setPrescriptionService(PrescriptionService prescriptionService) {
+//        this.prescriptionService = prescriptionService;
+//    }
 
-    @PostMapping("/register") // http://localhost:9092/auth/doctors/register/
-    public Doctor createDoctor(@RequestBody Doctor doctorObject) {
-        return doctorService.createDoctor(doctorObject);
-    }
+    static HashMap<String, Object> result = new HashMap<>();
+    static HashMap<String, Object> message = new HashMap<>();
 
-
-// LOGIN USER (POST)
-    @PostMapping(path = "/login/") // http://localhost:9092/auth/doctors/login/
-    public ResponseEntity<LoginResponse> loginUser(@RequestBody LoginRequest loginRequest) {
-        Optional<String> jwtToken = doctorService.loginDoctor(loginRequest);
-        if (jwtToken.isPresent()) {
-            return ResponseEntity.ok(new LoginResponse(jwtToken.get()));
+    @PostMapping(path = "/{doctorId}/patients/")
+    public ResponseEntity<?> createPatientDoctor(@PathVariable(value = "doctorId") Long doctorId, @RequestBody Patient patientObject) {
+        Optional<Patient> patientOptional = doctorService.createPatientDoctor(doctorId, patientObject);
+        if (patientOptional.isPresent()) {
+            message.put("message", "success");
+            message.put("data", patientOptional.get());
+            return new ResponseEntity<>(message, HttpStatus.CREATED);
         } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new LoginResponse("Authentication failed"));
+            message.put("message", "Patient already exists");
+            return new ResponseEntity<>(message, HttpStatus.CONFLICT);
         }
     }
 
-
-
+//    @GetMapping(path = "/{doctorId}/patients/")
+//    public ResponseEntity<?> getAllPatients(@PathVariable(value = "doctorId") Long doctorId) {
+//        List<Patient> patientList = doctorService.getAllPatients(doctorId);
+//        if (patientList.isEmpty()) {
+//            message.put("message", "No patients found for doctor with id " + doctorId);
+//            return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
+//        } else {
+//            message.put("message", "success");
+//            message.put("data", patientList);
+//            return new ResponseEntity<>(message, HttpStatus.OK);
+//        }
+//    }
 }

@@ -19,11 +19,19 @@ import java.util.logging.Logger;
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
 
+    Logger logger = Logger.getLogger(JwtRequestFilter.class.getName());
+
+
     @Autowired
     private MyDoctorDetailsService myDoctorDetailsService;
 
     @Autowired
     private JWTUtils jwtUtils;
+    @Autowired
+    public void setJwtUtils(JWTUtils jwtUtils) {
+        this.jwtUtils = jwtUtils;
+    }
+
 
     private String parseJwt(HttpServletRequest request) {
         String headerAuth = request.getHeader("Authorization");
@@ -48,7 +56,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         } catch (Exception e) {
-            logger.error("Cannot set user authentication: {}", e);
+            logger.info("Cannot set user authentication: {}");
         }
         filterChain.doFilter(request, response);
     }
