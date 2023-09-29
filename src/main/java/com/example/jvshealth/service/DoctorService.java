@@ -4,6 +4,7 @@ import com.example.jvshealth.exception.InformationExistException;
 import com.example.jvshealth.models.Doctor;
 import com.example.jvshealth.models.Patient;
 import com.example.jvshealth.repository.DoctorRepository;
+import com.example.jvshealth.repository.PatientRepository;
 import com.example.jvshealth.request.LoginRequest;
 import com.example.jvshealth.security.JWTUtils;
 import com.example.jvshealth.security.MyDoctorDetails;
@@ -23,16 +24,19 @@ public class DoctorService {
 
 //    public static Doctor findDoctorByEmailAddress;
     private final DoctorRepository doctorRepository;
+
+    private final PatientRepository patientRepository;
     private final PasswordEncoder passwordEncoder;
     private final JWTUtils jwtUtils;
     private final AuthenticationManager authenticationManager;
 
 
     @Autowired
-    public DoctorService(DoctorRepository doctorRepository, @Lazy PasswordEncoder passwordEncoder,
+    public DoctorService(DoctorRepository doctorRepository, PatientRepository patientRepository, @Lazy PasswordEncoder passwordEncoder,
                        JWTUtils jwtUtils,
                        @Lazy AuthenticationManager authenticationManager) {
         this.doctorRepository = doctorRepository;
+        this.patientRepository = patientRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtUtils = jwtUtils;
         this.authenticationManager = authenticationManager;
@@ -69,6 +73,14 @@ public class DoctorService {
     }
 
     public Optional<Patient> createPatientDoctor(Long doctorId, Patient patientObject) {
-
+        try {
+            Patient patient = patientRepository.findByDoctorId(getCurrentLoggedInDoctor().getId(), patientObject.getName(), patientObject.getBirthDate()).OrElse(null);
+            if (patient != null) {
+                throw new InformationExistException("Patient already exists and is a patient of Doctor with id " + doctorId);
+            } else {
+                patient.setDoctor(getCurrentLoggedInDoctor());
+                return Optional.of(patientRepository.save(patientObject));
+            }
+        }
     }
 }
