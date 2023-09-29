@@ -1,6 +1,7 @@
 package com.example.jvshealth.controller;
 
 import com.example.jvshealth.service.DoctorService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -17,6 +18,9 @@ public class DoctorControllerTest {
 
     @MockBean
     private DoctorService doctorService;
+
+    @Autowired
+    ObjectMapper objectMapper;
 
     @Test
     public void createDoctor() {
