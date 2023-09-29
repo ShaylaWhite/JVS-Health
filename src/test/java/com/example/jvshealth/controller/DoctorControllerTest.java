@@ -92,6 +92,6 @@ public class DoctorControllerTest {
                         .content(new ObjectMapper().writeValueAsString(request)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.jwt").value(token.get()))
-                .andDo(print());;
+                .andDo(print());
     }
 }
