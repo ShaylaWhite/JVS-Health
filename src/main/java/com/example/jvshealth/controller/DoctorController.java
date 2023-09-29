@@ -5,13 +5,11 @@ import com.example.jvshealth.service.DoctorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping(path = "/api/doctors/")
@@ -40,6 +38,19 @@ public class DoctorController {
 
     static HashMap<String, Object> result = new HashMap<>();
     static HashMap<String, Object> message = new HashMap<>();
+
+    @PostMapping(path = "/{doctorId}/patients/")
+    public ResponseEntity<?> createPatientDoctor(@PathVariable(value = "doctorId") Long doctorId, @RequestBody Patient patientObject) {
+        Optional<Patient> patientOptional = doctorService.createPatientDoctor(doctorId, patientObject);
+        if (patientOptional.isPresent()) {
+            message.put("message", "success");
+            message.put("data", patientOptional.get());
+            return new ResponseEntity<>(message, HttpStatus.CREATED);
+        } else {
+            message.put("message", "Patient already exists");
+            return new ResponseEntity<>(message, HttpStatus.CONFLICT);
+        }
+    }
 
     @GetMapping(path = "/{doctorId}/patients/")
     public ResponseEntity<?> getAllPatients(@PathVariable(value = "doctorId") Long doctorId) {
