@@ -33,7 +33,9 @@ public class Doctor {
     @LazyCollection(LazyCollectionOption.FALSE)
     private List<Prescription> prescriptionList;
 
-
+    @OneToMany(mappedBy = "doctor")
+    @LazyCollection(LazyCollectionOption.FALSE)
+    private List<Patient> patientList;
 
     public Doctor(Long id, String firstName, String lastName, String emailAddress) {
         this.id = id;
@@ -86,6 +88,14 @@ public class Doctor {
 
     public void setPrescriptionList(List<Prescription> prescriptionList) {
         this.prescriptionList = prescriptionList;
+    }
+
+    public List<Patient> getPatientList() {
+        return patientList;
+    }
+
+    public void setPatientList(List<Patient> patientList) {
+        this.patientList = patientList;
     }
 
     public String getPassword() {
