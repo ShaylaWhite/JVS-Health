@@ -73,14 +73,12 @@ public class DoctorService {
     }
 
     public Optional<Patient> createPatientDoctor(Long doctorId, Patient patientObject) {
-        try {
-            Patient patient = patientRepository.findByDoctorId(getCurrentLoggedInDoctor().getId(), patientObject.getName(), patientObject.getBirthDate());
-            if (patient != null) {
-                throw new InformationExistException("Patient already exists and is a patient of Doctor with id " + doctorId);
-            } else {
-                patient.setDoctor(getCurrentLoggedInDoctor());
-                return Optional.of(patientRepository.save(patientObject));
-            }
+        Patient patient = patientRepository.findByDoctorId(getCurrentLoggedInDoctor().getId(), patientObject.getName(), patientObject.getBirthDate());
+        if (patient != null) {
+            throw new InformationExistException("Patient already exists and is a patient of Doctor with id " + doctorId);
+        } else {
+            patient.setDoctor(getCurrentLoggedInDoctor());
+            return Optional.of(patientRepository.save(patientObject));
         }
     }
 }
