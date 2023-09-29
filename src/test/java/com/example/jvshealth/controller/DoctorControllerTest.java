@@ -1,5 +1,6 @@
 package com.example.jvshealth.controller;
 
+import com.example.jvshealth.models.Doctor;
 import com.example.jvshealth.service.DoctorService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
@@ -22,8 +23,15 @@ public class DoctorControllerTest {
     @Autowired
     ObjectMapper objectMapper;
 
+    Doctor RECORD_1 = new Doctor(1L, "Merrill", "Huang", "merrill@ga.com");
+
+    Doctor RECORD_2 = new Doctor(2L, "Shayla", "White", "shayla@ga.com");
+
+    Doctor RECORD_3 = new Doctor(3L, "Ariadna", "Rubio", "ariadna@ga.com");
+
     @Test
     public void createDoctor() {
+
     }
 
     @Test
