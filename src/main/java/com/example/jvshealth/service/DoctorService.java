@@ -17,6 +17,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -81,4 +82,8 @@ public class DoctorService {
             return Optional.of(patientRepository.save(patientObject));
         }
     }
+
+//    public List<Patient> getAllPatients(Long doctorId) {
+//        return null;
+//    }
 }

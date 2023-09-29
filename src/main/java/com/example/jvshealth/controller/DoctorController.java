@@ -17,24 +17,24 @@ public class DoctorController {
 
     private DoctorService doctorService;
 
-    private PatientService patientService;
+//    private PatientService patientService;
 
-    private PrescriptionService prescriptionService;
+//    private PrescriptionService prescriptionService;
 
     @Autowired
     public void setDoctorService(DoctorService doctorService) {
         this.doctorService = doctorService;
     }
 
-    @Autowired
-    public void setPatientService(PatientService patientService) {
-        this.patientService = patientService;
-    }
-
-    @Autowired
-    public void setPrescriptionService(PrescriptionService prescriptionService) {
-        this.prescriptionService = prescriptionService;
-    }
+//    @Autowired
+//    public void setPatientService(PatientService patientService) {
+//        this.patientService = patientService;
+//    }
+//
+//    @Autowired
+//    public void setPrescriptionService(PrescriptionService prescriptionService) {
+//        this.prescriptionService = prescriptionService;
+//    }
 
     static HashMap<String, Object> result = new HashMap<>();
     static HashMap<String, Object> message = new HashMap<>();
@@ -52,16 +52,16 @@ public class DoctorController {
         }
     }
 
-    @GetMapping(path = "/{doctorId}/patients/")
-    public ResponseEntity<?> getAllPatients(@PathVariable(value = "doctorId") Long doctorId) {
-        List<Patient> patientList = doctorService.getAllPatients(doctorId);
-        if (patientList.isEmpty()) {
-            message.put("message", "No patients found for doctor with id " + doctorId);
-            return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
-        } else {
-            message.put("message", "success");
-            message.put("data", patientList);
-            return new ResponseEntity<>(message, HttpStatus.OK);
-        }
-    }
+//    @GetMapping(path = "/{doctorId}/patients/")
+//    public ResponseEntity<?> getAllPatients(@PathVariable(value = "doctorId") Long doctorId) {
+//        List<Patient> patientList = doctorService.getAllPatients(doctorId);
+//        if (patientList.isEmpty()) {
+//            message.put("message", "No patients found for doctor with id " + doctorId);
+//            return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
+//        } else {
+//            message.put("message", "success");
+//            message.put("data", patientList);
+//            return new ResponseEntity<>(message, HttpStatus.OK);
+//        }
+//    }
 }

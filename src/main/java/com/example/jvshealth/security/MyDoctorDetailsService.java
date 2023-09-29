@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 public class MyDoctorDetailsService implements UserDetailsService {
 
     private DoctorService doctorService;
-@Autowired
+    @Autowired
     public void setDoctorDetailsService(DoctorService doctorService) {
         this.doctorService = doctorService;
     }
