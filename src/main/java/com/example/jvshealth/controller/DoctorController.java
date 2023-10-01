@@ -52,16 +52,16 @@ public class DoctorController {
         }
     }
 
-//    @GetMapping(path = "/{doctorId}/patients/")
-//    public ResponseEntity<?> getAllPatients(@PathVariable(value = "doctorId") Long doctorId) {
-//        List<Patient> patientList = doctorService.getAllPatients(doctorId);
-//        if (patientList.isEmpty()) {
-//            message.put("message", "No patients found for doctor with id " + doctorId);
-//            return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
-//        } else {
-//            message.put("message", "success");
-//            message.put("data", patientList);
-//            return new ResponseEntity<>(message, HttpStatus.OK);
-//        }
-//    }
+    @GetMapping(path = "/{doctorId}/patients/")
+    public ResponseEntity<?> getAllPatients(@PathVariable(value = "doctorId") Long doctorId) {
+        List<Patient> patientList = doctorService.getAllPatients(doctorId);
+        if (patientList.isEmpty()) {
+            message.put("message", "No patients found for doctor with id " + doctorId);
+            return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
+        } else {
+            message.put("message", "success");
+            message.put("data", patientList);
+            return new ResponseEntity<>(message, HttpStatus.OK);
+        }
+    }
 }

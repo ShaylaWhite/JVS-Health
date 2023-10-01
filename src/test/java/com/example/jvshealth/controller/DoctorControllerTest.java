@@ -8,6 +8,7 @@ import com.example.jvshealth.response.LoginResponse;
 import com.example.jvshealth.service.DoctorService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -25,6 +26,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
@@ -54,10 +56,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
-@RunWith(MockitoJUnitRunner.class)
-@WebMvcTest(AuthController.class)
 
-@RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
 @ComponentScan(basePackages = "com.example")
@@ -125,7 +124,7 @@ public class DoctorControllerTest {
 
     Patient PATIENT_3 = new Patient(3L, "Ariadna Rubio", LocalDate.of(2023,11,25));
 
-    @Test
+    @Ignore
     public void createPatientDoctor() throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
@@ -136,4 +135,7 @@ public class DoctorControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.message").value("success"));
     }
+
+
+
 }

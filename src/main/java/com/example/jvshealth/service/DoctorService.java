@@ -1,6 +1,7 @@
 package com.example.jvshealth.service;
 
 import com.example.jvshealth.exception.InformationExistException;
+import com.example.jvshealth.exception.InformationNotFoundException;
 import com.example.jvshealth.models.Doctor;
 import com.example.jvshealth.models.Patient;
 import com.example.jvshealth.repository.DoctorRepository;
@@ -83,5 +84,20 @@ public class DoctorService {
             patientObject.setDoctor(getCurrentLoggedInDoctor());
             return Optional.of(patientRepository.save(patientObject));
         }
+    }
+    //http://localhost:9092/api/doctors/1/patients/
+    public List<Patient> getAllPatients(Long doctorId) {
+       Optional<Doctor> doctorOptional = doctorRepository.findById(doctorId);
+       if(doctorOptional.isPresent()) {
+           List<Patient> patientList = doctorOptional.get().getPatientList();
+           if (patientList.isEmpty()) {
+               throw new InformationNotFoundException("patient list is empty for doctor with id  " + doctorId);
+
+           } else {
+               return patientList;
+           }
+       } else {
+           throw new InformationNotFoundException("Doctor with ID " + doctorId + " not found");
+       }
     }
 }
