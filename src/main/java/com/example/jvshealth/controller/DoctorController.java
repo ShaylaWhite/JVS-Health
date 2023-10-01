@@ -81,6 +81,20 @@ public class DoctorController {
         return new ResponseEntity<>(message, HttpStatus.OK);
     }
 }
+
+    @DeleteMapping(path = "/patients/{patientId}")
+    public ResponseEntity<?> deletePatientById(@PathVariable(value = "patientId") Long patientId ){
+        Long doctorId = DoctorService.getCurrentLoggedInDoctor().getId();
+        Optional<Patient> patientOptional = doctorService.deletePatientById(doctorId, patientId);
+        if (patientOptional.isEmpty()) {
+            message.put("message", "No patient with patient id " + patientId + " found" );
+            return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
+        } else {
+            message.put("message", "successfully deleted!");
+            message.put("data", patientOptional);
+            return new ResponseEntity<>(message, HttpStatus.OK);
+        }
+    }
 }
 
 

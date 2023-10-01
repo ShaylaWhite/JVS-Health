@@ -118,4 +118,15 @@ patientRepository.save(patientOptional.get());
             throw new InformationNotFoundException("Doctor with ID " + doctorId + " not found");
         }
     }
+
+    public Optional<Patient> deletePatientById(Long doctorId, Long patientId) {
+        Optional<Doctor> doctorOptional = doctorRepository.findById(doctorId);
+        if(doctorOptional.isPresent()) {
+         Optional<Patient> patientOptional = patientRepository.findById(patientId);
+            patientRepository.deleteById(patientId);
+            return patientOptional;
+        } else {
+            throw new InformationNotFoundException("Doctor with ID " + doctorId + " not found");
+        }
+    }
 }
