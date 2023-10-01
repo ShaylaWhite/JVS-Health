@@ -4,8 +4,10 @@ import com.example.jvshealth.exception.InformationExistException;
 import com.example.jvshealth.exception.InformationNotFoundException;
 import com.example.jvshealth.models.Doctor;
 import com.example.jvshealth.models.Patient;
+import com.example.jvshealth.models.Prescription;
 import com.example.jvshealth.repository.DoctorRepository;
 import com.example.jvshealth.repository.PatientRepository;
+import com.example.jvshealth.repository.PrescriptionRepository;
 import com.example.jvshealth.request.LoginRequest;
 import com.example.jvshealth.security.JWTUtils;
 import com.example.jvshealth.security.MyDoctorDetails;
@@ -28,17 +30,19 @@ public class DoctorService {
     private final DoctorRepository doctorRepository;
 
     private final PatientRepository patientRepository;
+    private final PrescriptionRepository prescriptionRepository;
     private final PasswordEncoder passwordEncoder;
     private final JWTUtils jwtUtils;
     private final AuthenticationManager authenticationManager;
 
 
     @Autowired
-    public DoctorService(DoctorRepository doctorRepository, PatientRepository patientRepository, @Lazy PasswordEncoder passwordEncoder,
-                       JWTUtils jwtUtils,
-                       @Lazy AuthenticationManager authenticationManager) {
+    public DoctorService(DoctorRepository doctorRepository, PatientRepository patientRepository, PrescriptionRepository prescriptionRepository, @Lazy PasswordEncoder passwordEncoder,
+                         JWTUtils jwtUtils,
+                         @Lazy AuthenticationManager authenticationManager) {
         this.doctorRepository = doctorRepository;
         this.patientRepository = patientRepository;
+        this.prescriptionRepository = prescriptionRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtUtils = jwtUtils;
         this.authenticationManager = authenticationManager;
@@ -128,5 +132,25 @@ patientRepository.save(patientOptional.get());
         } else {
             throw new InformationNotFoundException("Doctor with ID " + doctorId + " not found");
         }
+    }
+
+    public Optional<Prescription> createPrescriptionPatient(Long doctorId, Long patientId, Prescription prescriptionObject) {
+        Optional<Patient> patientOptional = Optional.ofNullable(patientRepository.findByDoctorId(doctorId));
+
+        if (patientOptional.isEmpty()) {
+            throw new InformationNotFoundException("Patient with id " + patientId + " does not exist");
+        } else {
+           Optional<Prescription> prescriptionOptional =
+                   prescriptionRepository.findByPatientIdAndDetails(patientId, prescriptionObject.getDetails());
+if(prescriptionOptional.isEmpty()) {
+    prescriptionObject.setDoctor(DoctorService.getCurrentLoggedInDoctor());
+    prescriptionObject.setPatient(patientOptional.get());
+   return Optional.of(prescriptionRepository.save(prescriptionObject));
+
+}else {
+return Optional.empty();
+}
+        }
+
     }
 }
