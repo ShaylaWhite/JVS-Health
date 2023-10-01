@@ -152,6 +152,20 @@ public class DoctorController {
         }
     }
 
+    @DeleteMapping(path = "/patients/{patientId}/prescriptions/{prescriptionId}")
+    public ResponseEntity<?>  deletePrescriptionById(@PathVariable(value="patientId") Long patientId, @PathVariable(value="prescriptionId") Long prescriptionId) {
+        Long doctorId = DoctorService.getCurrentLoggedInDoctor().getId();
+        Optional<Prescription> prescriptionOptional = doctorService.deletePrescriptionById(doctorId, patientId, prescriptionId);
+        if (prescriptionOptional.isEmpty()) {
+            message.put("message", "No prescription with prescription id " + prescriptionId + " found" );
+            return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
+        } else {
+            message.put("message", "successfully deleted!");
+            message.put("data", prescriptionOptional);
+            return new ResponseEntity<>(message, HttpStatus.OK);
+        }
+    }
+
 }
 
 

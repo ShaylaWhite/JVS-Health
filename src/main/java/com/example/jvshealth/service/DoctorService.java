@@ -208,4 +208,24 @@ public class DoctorService {
             throw new InformationNotFoundException("Doctor with ID " + doctorId + " not found");
         }
     }
+
+    public Optional<Prescription> deletePrescriptionById(Long doctorId, Long patientId, Long prescriptionId) {
+        Optional<Doctor> doctorOptional = doctorRepository.findById(doctorId);
+        if (doctorOptional.isPresent()) {
+            Optional<Patient> patientOptional = Optional.of(patientRepository.findByDoctorId(doctorId));
+            if (patientOptional.isPresent()) {
+                Optional<Prescription> prescriptionOptional = prescriptionRepository.findByPatientIdAndId(patientId, prescriptionId);
+                if (prescriptionOptional.isPresent()) {
+                    prescriptionRepository.deleteById(prescriptionOptional.get().getId());
+                    return prescriptionOptional;
+                } else {
+                    return Optional.empty();
+                }
+            } else {
+                throw new InformationNotFoundException("Patient with ID " + patientId + " not found");
+            }
+        } else {
+            throw new InformationNotFoundException("Doctor with ID " + doctorId + " not found");
+        }
+    }
 }
