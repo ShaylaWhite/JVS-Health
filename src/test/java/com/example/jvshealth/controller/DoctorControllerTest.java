@@ -1,11 +1,13 @@
 package com.example.jvshealth.controller;
 
 import com.example.jvshealth.models.Doctor;
+import com.example.jvshealth.models.Patient;
 import com.example.jvshealth.repository.DoctorRepository;
 import com.example.jvshealth.request.LoginRequest;
 import com.example.jvshealth.response.LoginResponse;
 import com.example.jvshealth.service.DoctorService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -35,6 +37,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 import static org.hamcrest.Matchers.notNullValue;
@@ -114,5 +117,23 @@ public class DoctorControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.jwt").value(token.get()))
                 .andDo(print());
+    }
+
+    Patient PATIENT_1 = new Patient(1L, "Merrill Huang", LocalDate.of(2023,9,25));
+
+    Patient PATIENT_2 = new Patient(2L, "Shayla White", LocalDate.of(2023,10,25));
+
+    Patient PATIENT_3 = new Patient(3L, "Ariadna Rubio", LocalDate.of(2023,11,25));
+
+    @Test
+    public void createPatientDoctor() throws Exception {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        when(doctorService.createPatientDoctor(Mockito.any(Long.class), Mockito.any(Patient.class))).thenReturn(Optional.ofNullable(PATIENT_2));
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/doctors/1/patients/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(PATIENT_2)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.message").value("success"));
     }
 }
