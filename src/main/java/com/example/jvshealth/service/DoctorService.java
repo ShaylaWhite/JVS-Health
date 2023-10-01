@@ -155,13 +155,28 @@ public class DoctorService {
         }
 
     }
-
+// GET ALL PRESCRIPTIONS
     public List<Prescription> getAllPrescriptionsPatients(Long doctorId, Long patientId) {
         Optional<Doctor> doctorOptional = doctorRepository.findById(doctorId);
         if (doctorOptional.isPresent()) {
             Optional<Patient> patientOptional = Optional.of(patientRepository.findByDoctorId(doctorId));
             if (patientOptional.isPresent()) {
                 return patientOptional.get().getPrescriptionList();
+            } else {
+                throw new InformationNotFoundException("Patient with ID " + patientId + " not found");
+            }
+        } else {
+            throw new InformationNotFoundException("Doctor with ID " + doctorId + " not found");
+        }
+    }
+
+    // GET  PRESCRIPTION BY ID
+
+    public Optional<Prescription> getPrescriptionById(Long doctorId, Long patientId, Long prescriptionId ) {
+        Optional<Doctor> doctorOptional = doctorRepository.findById(doctorId);
+        if (doctorOptional.isPresent()) {
+            Optional<Patient> patientOptional = Optional.of(patientRepository.findByDoctorId(doctorId));
+            if (patientOptional.isPresent()) {
             } else {
                 throw new InformationNotFoundException("Patient with ID " + patientId + " not found");
             }
