@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.swing.text.html.Option;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -63,6 +64,19 @@ public class DoctorController {
         } else {
             message.put("message", "success");
             message.put("data", patientList);
+            return new ResponseEntity<>(message, HttpStatus.OK);
+        }
+    }
+    @GetMapping(path = "/patients/{patientId}")
+    public ResponseEntity<?> getPatientById(@PathVariable(value = "patientId") Long patientId) {
+        Long doctorId = DoctorService.getCurrentLoggedInDoctor().getId();
+       Optional<Patient> patientOptional = doctorService.getPatientById(doctorId, patientId);
+        if (patientOptional.isEmpty()) {
+            message.put("message", "No patient with patient id " + patientId + " not found" );
+            return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
+        } else {
+            message.put("message", "success");
+            message.put("data", patientOptional);
             return new ResponseEntity<>(message, HttpStatus.OK);
         }
     }

@@ -95,4 +95,14 @@ public class DoctorService {
            throw new InformationNotFoundException("Doctor with ID " + doctorId + " not found");
        }
     }
+
+    public Optional<Patient> getPatientById(Long doctorId, Long patientId) {
+        Optional<Doctor> doctorOptional = doctorRepository.findById(doctorId);
+        if(doctorOptional.isPresent()) {
+            Optional<Patient> patientOptional = patientRepository.findById(patientId);
+            return patientOptional;
+        } else {
+            throw new InformationNotFoundException("Doctor with ID " + doctorId + " not found");
+        }
+    }
 }
