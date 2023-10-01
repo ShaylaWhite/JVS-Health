@@ -33,7 +33,7 @@ public class Doctor {
     @LazyCollection(LazyCollectionOption.FALSE)
     private List<Prescription> prescriptionList;
 
-    @OneToMany(mappedBy = "doctor")
+    @OneToMany(mappedBy = "doctor",  orphanRemoval = true)
     @LazyCollection(LazyCollectionOption.FALSE)
     private List<Patient> patientList;
 

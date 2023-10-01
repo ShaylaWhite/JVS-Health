@@ -1,6 +1,8 @@
 package com.example.jvshealth.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -22,11 +24,13 @@ public class Patient {
     @Column
     private LocalDate birthDate;
 
-    @OneToMany(mappedBy = "patient", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "patient")
+    @LazyCollection(LazyCollectionOption.FALSE)
     private List<Prescription> prescriptionList;
 
     @ManyToOne
     @JoinColumn(name = "doctor_id")
+    @LazyCollection(LazyCollectionOption.FALSE)
     @JsonIgnore
     private Doctor doctor;
 

@@ -1,10 +1,13 @@
 package com.example.jvshealth.service;
 
 import com.example.jvshealth.exception.InformationExistException;
+import com.example.jvshealth.exception.InformationNotFoundException;
 import com.example.jvshealth.models.Doctor;
 import com.example.jvshealth.models.Patient;
+import com.example.jvshealth.models.Prescription;
 import com.example.jvshealth.repository.DoctorRepository;
 import com.example.jvshealth.repository.PatientRepository;
+import com.example.jvshealth.repository.PrescriptionRepository;
 import com.example.jvshealth.request.LoginRequest;
 import com.example.jvshealth.security.JWTUtils;
 import com.example.jvshealth.security.MyDoctorDetails;
@@ -23,21 +26,23 @@ import java.util.Optional;
 @Service
 public class DoctorService {
 
-//    public static Doctor findDoctorByEmailAddress;
+    //    public static Doctor findDoctorByEmailAddress;
     private final DoctorRepository doctorRepository;
 
     private final PatientRepository patientRepository;
+    private final PrescriptionRepository prescriptionRepository;
     private final PasswordEncoder passwordEncoder;
     private final JWTUtils jwtUtils;
     private final AuthenticationManager authenticationManager;
 
 
     @Autowired
-    public DoctorService(DoctorRepository doctorRepository, PatientRepository patientRepository, @Lazy PasswordEncoder passwordEncoder,
-                       JWTUtils jwtUtils,
-                       @Lazy AuthenticationManager authenticationManager) {
+    public DoctorService(DoctorRepository doctorRepository, PatientRepository patientRepository, PrescriptionRepository prescriptionRepository, @Lazy PasswordEncoder passwordEncoder,
+                         JWTUtils jwtUtils,
+                         @Lazy AuthenticationManager authenticationManager) {
         this.doctorRepository = doctorRepository;
         this.patientRepository = patientRepository;
+        this.prescriptionRepository = prescriptionRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtUtils = jwtUtils;
         this.authenticationManager = authenticationManager;
@@ -56,6 +61,7 @@ public class DoctorService {
             throw new InformationExistException("user with email address " + doctorObject.getEmailAddress() + " already exists");
         }
     }
+
     public Optional<String> loginDoctor(LoginRequest loginRequest) {
         UsernamePasswordAuthenticationToken authenticationToken = new
                 UsernamePasswordAuthenticationToken(loginRequest.getEmailAddress(), loginRequest.getPassword());
@@ -69,10 +75,10 @@ public class DoctorService {
         }
     }
 
-    public Doctor findDoctorByEmailAddress(String emailAddress){
+    public Doctor findDoctorByEmailAddress(String emailAddress) {
         return doctorRepository.findDoctorByEmailAddress(emailAddress);
     }
-    
+
 
     //http://localhost:9092/api/doctors/1/patients/
     public Optional<Patient> createPatientDoctor(Long doctorId, Patient patientObject) {
@@ -82,6 +88,144 @@ public class DoctorService {
         } else {
             patientObject.setDoctor(getCurrentLoggedInDoctor());
             return Optional.of(patientRepository.save(patientObject));
+        }
+    }
+
+    //http://localhost:9092/api/doctors/1/patients/
+    public List<Patient> getAllPatients(Long doctorId) {
+        Optional<Doctor> doctorOptional = doctorRepository.findById(doctorId);
+        if (doctorOptional.isPresent()) {
+            List<Patient> patientList = doctorOptional.get().getPatientList();
+            return patientList;
+        } else {
+            throw new InformationNotFoundException("Doctor with ID " + doctorId + " not found");
+        }
+    }
+
+    public Optional<Patient> getPatientById(Long doctorId, Long patientId) {
+        Optional<Doctor> doctorOptional = doctorRepository.findById(doctorId);
+        if (doctorOptional.isPresent()) {
+            Optional<Patient> patientOptional = patientRepository.findById(patientId);
+            return patientOptional;
+        } else {
+            throw new InformationNotFoundException("Doctor with ID " + doctorId + " not found");
+        }
+    }
+
+    public Optional<Patient> updatePatientById(Long doctorId, Long patientId, Patient patientObject) {
+        Optional<Doctor> doctorOptional = doctorRepository.findById(doctorId);
+        if (doctorOptional.isPresent()) {
+            Optional<Patient> patientOptional = patientRepository.findById(patientId);
+            patientOptional.get().setName(patientObject.getName());
+            patientOptional.get().setBirthDate(patientObject.getBirthDate());
+            patientRepository.save(patientOptional.get());
+            return patientOptional;
+        } else {
+            throw new InformationNotFoundException("Doctor with ID " + doctorId + " not found");
+        }
+    }
+
+    public Optional<Patient> deletePatientById(Long doctorId, Long patientId) {
+        Optional<Doctor> doctorOptional = doctorRepository.findById(doctorId);
+        if (doctorOptional.isPresent()) {
+            Optional<Patient> patientOptional = patientRepository.findById(patientId);
+            patientRepository.deleteById(patientId);
+            return patientOptional;
+        } else {
+            throw new InformationNotFoundException("Doctor with ID " + doctorId + " not found");
+        }
+    }
+
+    public Optional<Prescription> createPrescriptionPatient(Long doctorId, Long patientId, Prescription prescriptionObject) {
+        Optional<Patient> patientOptional = Optional.ofNullable(patientRepository.findByDoctorId(doctorId));
+
+        if (patientOptional.isEmpty()) {
+            throw new InformationNotFoundException("Patient with id " + patientId + " does not exist");
+        } else {
+            Optional<Prescription> prescriptionOptional =
+                    prescriptionRepository.findByPatientIdAndDetails(patientId, prescriptionObject.getDetails());
+            if (prescriptionOptional.isEmpty()) {
+                prescriptionObject.setDoctor(DoctorService.getCurrentLoggedInDoctor());
+                prescriptionObject.setPatient(patientOptional.get());
+                return Optional.of(prescriptionRepository.save(prescriptionObject));
+
+            } else {
+                return Optional.empty();
+            }
+        }
+
+    }
+// GET ALL PRESCRIPTIONS
+    public List<Prescription> getAllPrescriptionsPatients(Long doctorId, Long patientId) {
+        Optional<Doctor> doctorOptional = doctorRepository.findById(doctorId);
+        if (doctorOptional.isPresent()) {
+            Optional<Patient> patientOptional = Optional.of(patientRepository.findByDoctorId(doctorId));
+            if (patientOptional.isPresent()) {
+                return patientOptional.get().getPrescriptionList();
+            } else {
+                throw new InformationNotFoundException("Patient with ID " + patientId + " not found");
+            }
+        } else {
+            throw new InformationNotFoundException("Doctor with ID " + doctorId + " not found");
+        }
+    }
+
+    // GET  PRESCRIPTION BY ID
+
+    public Optional<Prescription> getPrescriptionById(Long doctorId, Long patientId, Long prescriptionId ) {
+        Optional<Doctor> doctorOptional = doctorRepository.findById(doctorId);
+        if (doctorOptional.isPresent()) {
+            Optional<Patient> patientOptional = Optional.of(patientRepository.findByDoctorId(doctorId));
+            if (patientOptional.isPresent()) {
+                Optional<Prescription> prescriptionOptional = prescriptionRepository.findByPatientIdAndId(patientId, prescriptionId);
+                return prescriptionOptional;
+            } else {
+                throw new InformationNotFoundException("Patient with ID " + patientId + " not found");
+            }
+        } else {
+            throw new InformationNotFoundException("Doctor with ID " + doctorId + " not found");
+        }
+    }
+
+    // UPDATE PRESCRIPTION BY ID
+
+    public Optional<Prescription> updatePrescriptionById(Long doctorId, Long patientId, Long prescriptionId, Prescription prescriptionObject) {
+        Optional<Doctor> doctorOptional = doctorRepository.findById(doctorId);
+        if (doctorOptional.isPresent()) {
+            Optional<Patient> patientOptional = Optional.of(patientRepository.findByDoctorId(doctorId));
+            if (patientOptional.isPresent()) {
+                Optional<Prescription> prescriptionOptional = prescriptionRepository.findByPatientIdAndId(patientId, prescriptionId);
+                if (prescriptionOptional.isPresent()) {
+                    prescriptionOptional.get().setDetails(prescriptionObject.getDetails());
+                  return Optional.of(prescriptionRepository.save(prescriptionOptional.get()));
+                } else {
+                    return Optional.empty();
+                }
+            } else {
+                throw new InformationNotFoundException("Patient with ID " + patientId + " not found");
+            }
+        } else {
+            throw new InformationNotFoundException("Doctor with ID " + doctorId + " not found");
+        }
+    }
+
+    public Optional<Prescription> deletePrescriptionById(Long doctorId, Long patientId, Long prescriptionId) {
+        Optional<Doctor> doctorOptional = doctorRepository.findById(doctorId);
+        if (doctorOptional.isPresent()) {
+            Optional<Patient> patientOptional = Optional.of(patientRepository.findByDoctorId(doctorId));
+            if (patientOptional.isPresent()) {
+                Optional<Prescription> prescriptionOptional = prescriptionRepository.findByPatientIdAndId(patientId, prescriptionId);
+                if (prescriptionOptional.isPresent()) {
+                    prescriptionRepository.deleteById(prescriptionOptional.get().getId());
+                    return prescriptionOptional;
+                } else {
+                    return Optional.empty();
+                }
+            } else {
+                throw new InformationNotFoundException("Patient with ID " + patientId + " not found");
+            }
+        } else {
+            throw new InformationNotFoundException("Doctor with ID " + doctorId + " not found");
         }
     }
 }
