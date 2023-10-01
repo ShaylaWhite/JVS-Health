@@ -10,12 +10,17 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-<<<<<<< HEAD
+
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
-=======
+
 import org.mockito.Mockito;
->>>>>>> testing
+
+
+import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
+
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -33,24 +38,27 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import java.util.Optional;
 
 import static org.hamcrest.Matchers.notNullValue;
-<<<<<<< HEAD
-=======
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
->>>>>>> testing
+
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-<<<<<<< HEAD
+
 @RunWith(MockitoJUnitRunner.class)
 @WebMvcTest(AuthController.class)
-=======
+
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
 @ComponentScan(basePackages = "com.example")
->>>>>>> testing
+
 public class DoctorControllerTest {
 
     @Autowired
