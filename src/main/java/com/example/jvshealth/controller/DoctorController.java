@@ -1,6 +1,7 @@
 package com.example.jvshealth.controller;
 
 import com.example.jvshealth.models.Patient;
+import com.example.jvshealth.models.Prescription;
 import com.example.jvshealth.service.DoctorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -93,6 +94,22 @@ public class DoctorController {
             message.put("message", "successfully deleted!");
             message.put("data", patientOptional);
             return new ResponseEntity<>(message, HttpStatus.OK);
+        }
+    }
+
+    //CRUD FOR PRESCRIPTION
+    @PostMapping(path = "/patients/{patientId}/prescriptions/")
+    public ResponseEntity<?> createPrescriptionPatient(@PathVariable(value = "patientId") Long patientId,@RequestBody Prescription prescriptionObject) {
+        Long doctorId = DoctorService.getCurrentLoggedInDoctor().getId();
+        Optional<Prescription> prescriptionOptional =
+                doctorService.createPrescriptionPatient(doctorId,patientId, prescriptionObject);
+        if (prescriptionOptional.isPresent()) {
+            message.put("message", "success");
+            message.put("data", prescriptionOptional.get());
+            return new ResponseEntity<>(message, HttpStatus.CREATED);
+        } else {
+            message.put("message", "Prescription already exists");
+            return new ResponseEntity<>(message, HttpStatus.CONFLICT);
         }
     }
 }
