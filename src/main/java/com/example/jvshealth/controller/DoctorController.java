@@ -112,6 +112,19 @@ public class DoctorController {
             return new ResponseEntity<>(message, HttpStatus.CONFLICT);
         }
     }
+    @GetMapping(path = "/patients/{patientId}/prescriptions/")
+    public ResponseEntity<?> getAllPrescriptionsPatients(@PathVariable(value="patientId") Long patientId) {
+        Long doctorId = DoctorService.getCurrentLoggedInDoctor().getId();
+        List<Prescription> prescriptionList = doctorService.getAllPrescriptionsPatients(doctorId, patientId);
+        if (prescriptionList.isEmpty()) {
+            message.put("message", "No prescriptions found for doctor with id " + doctorId);
+            return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
+        } else {
+            message.put("message", "success");
+            message.put("data", prescriptionList);
+            return new ResponseEntity<>(message, HttpStatus.OK);
+        }
+    }
 }
 
 
