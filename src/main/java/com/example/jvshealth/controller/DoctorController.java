@@ -125,7 +125,19 @@ public class DoctorController {
             return new ResponseEntity<>(message, HttpStatus.OK);
         }
     }
-
+    @GetMapping(path = "/patients/{patientId}/prescriptions/{prescriptionId}")
+    public ResponseEntity<?> getPrescriptionById(@PathVariable(value="patientId") Long patientId, @PathVariable(value="prescriptionId") Long prescriptionId) {
+        Long doctorId = DoctorService.getCurrentLoggedInDoctor().getId();
+        Optional <Prescription> prescriptionOptional = doctorService.getPrescriptionById(doctorId, patientId, prescriptionId);
+        if (prescriptionOptional .isEmpty()) {
+            message.put("message", "No prescriptions with id" + prescriptionId + "found for" + doctorId);
+            return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
+        } else {
+            message.put("message", "success");
+            message.put("data",  prescriptionOptional );
+            return new ResponseEntity<>(message, HttpStatus.OK);
+        }
+    }
 
 }
 

@@ -177,7 +177,7 @@ public class DoctorService {
         if (doctorOptional.isPresent()) {
             Optional<Patient> patientOptional = Optional.of(patientRepository.findByDoctorId(doctorId));
             if (patientOptional.isPresent()) {
-                Optional<Prescription> prescriptionOptional = prescriptionRepository.findByPatientId(patientId);
+                Optional<Prescription> prescriptionOptional = prescriptionRepository.findByPatientIdandId(patientId);
                 return prescriptionOptional;
             } else {
                 throw new InformationNotFoundException("Patient with ID " + patientId + " not found");
