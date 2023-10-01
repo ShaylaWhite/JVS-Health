@@ -105,4 +105,17 @@ public class DoctorService {
             throw new InformationNotFoundException("Doctor with ID " + doctorId + " not found");
         }
     }
+
+    public Optional<Patient> updatePatientById(Long doctorId, Long patientId, Patient patientObject) {
+        Optional<Doctor> doctorOptional = doctorRepository.findById(doctorId);
+        if(doctorOptional.isPresent()) {
+            Optional<Patient> patientOptional = patientRepository.findById(patientId);
+            patientOptional.get().setName(patientObject.getName());
+            patientOptional.get().setBirthDate(patientObject.getBirthDate());
+patientRepository.save(patientOptional.get());
+            return patientOptional;
+        } else {
+            throw new InformationNotFoundException("Doctor with ID " + doctorId + " not found");
+        }
+    }
 }

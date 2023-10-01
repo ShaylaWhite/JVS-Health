@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.swing.text.html.Option;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -18,26 +18,13 @@ public class DoctorController {
 
     private DoctorService doctorService;
 
-//    private PatientService patientService;
-
-//    private PrescriptionService prescriptionService;
-
     @Autowired
     public void setDoctorService(DoctorService doctorService) {
         this.doctorService = doctorService;
     }
 
-//    @Autowired
-//    public void setPatientService(PatientService patientService) {
-//        this.patientService = patientService;
-//    }
-//
-//    @Autowired
-//    public void setPrescriptionService(PrescriptionService prescriptionService) {
-//        this.prescriptionService = prescriptionService;
-//    }
 
-    static HashMap<String, Object> result = new HashMap<>();
+
     static HashMap<String, Object> message = new HashMap<>();
 
     @PostMapping(path = "/patients/")
@@ -72,7 +59,7 @@ public class DoctorController {
         Long doctorId = DoctorService.getCurrentLoggedInDoctor().getId();
        Optional<Patient> patientOptional = doctorService.getPatientById(doctorId, patientId);
         if (patientOptional.isEmpty()) {
-            message.put("message", "No patient with patient id " + patientId + " not found" );
+            message.put("message", "No patient with patient id " + patientId + " found" );
             return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
         } else {
             message.put("message", "success");
@@ -80,4 +67,20 @@ public class DoctorController {
             return new ResponseEntity<>(message, HttpStatus.OK);
         }
     }
+
+@PutMapping(path = "/patients/{patientId}")
+ public ResponseEntity<?>  updatePatientById(@PathVariable(value = "patientId") Long patientId ,@RequestBody Patient patientObject){
+    Long doctorId = DoctorService.getCurrentLoggedInDoctor().getId();
+    Optional<Patient> patientOptional = doctorService.updatePatientById(doctorId, patientId, patientObject);
+    if (patientOptional.isEmpty()) {
+        message.put("message", "No patient with patient id " + patientId + " found" );
+        return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
+    } else {
+        message.put("message", "successfully updated!");
+        message.put("data", patientOptional);
+        return new ResponseEntity<>(message, HttpStatus.OK);
+    }
 }
+}
+
+
