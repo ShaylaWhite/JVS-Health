@@ -5,12 +5,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
-
+git
 @Repository
 public interface PrescriptionRepository extends JpaRepository<Prescription, Long> {
     Optional<Prescription> findByPatientIdAndDetails(Long patientId, String details);
 
     Optional<Prescription> findByPatientId(Long patientId);
 
-    Optional<Prescription> findByPatientIdandId(Long patientId, Long Id);
+    Optional<Prescription> findByPatientIdAndId(Long patientId, Long id);
 }
