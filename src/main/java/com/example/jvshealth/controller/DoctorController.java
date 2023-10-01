@@ -39,8 +39,9 @@ public class DoctorController {
     static HashMap<String, Object> result = new HashMap<>();
     static HashMap<String, Object> message = new HashMap<>();
 
-    @PostMapping(path = "/{doctorId}/patients/")
-    public ResponseEntity<?> createPatientDoctor(@PathVariable(value = "doctorId") Long doctorId, @RequestBody Patient patientObject) {
+    @PostMapping(path = "/patients/")
+    public ResponseEntity<?> createPatientDoctor(@RequestBody Patient patientObject) {
+        Long doctorId = DoctorService.getCurrentLoggedInDoctor().getId();
         Optional<Patient> patientOptional = doctorService.createPatientDoctor(doctorId, patientObject);
         if (patientOptional.isPresent()) {
             message.put("message", "success");
@@ -52,8 +53,9 @@ public class DoctorController {
         }
     }
 
-    @GetMapping(path = "/{doctorId}/patients/")
-    public ResponseEntity<?> getAllPatients(@PathVariable(value = "doctorId") Long doctorId) {
+    @GetMapping(path = "/patients/")
+    public ResponseEntity<?> getAllPatients() {
+        Long doctorId = DoctorService.getCurrentLoggedInDoctor().getId();
         List<Patient> patientList = doctorService.getAllPatients(doctorId);
         if (patientList.isEmpty()) {
             message.put("message", "No patients found for doctor with id " + doctorId);

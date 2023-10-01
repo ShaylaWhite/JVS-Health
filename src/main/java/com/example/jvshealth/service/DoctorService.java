@@ -90,12 +90,7 @@ public class DoctorService {
        Optional<Doctor> doctorOptional = doctorRepository.findById(doctorId);
        if(doctorOptional.isPresent()) {
            List<Patient> patientList = doctorOptional.get().getPatientList();
-           if (patientList.isEmpty()) {
-               throw new InformationNotFoundException("patient list is empty for doctor with id  " + doctorId);
-
-           } else {
-               return patientList;
-           }
+           return patientList;
        } else {
            throw new InformationNotFoundException("Doctor with ID " + doctorId + " not found");
        }
