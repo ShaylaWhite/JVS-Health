@@ -34,6 +34,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
@@ -124,16 +125,18 @@ public class DoctorControllerTest {
 
     Patient PATIENT_3 = new Patient(3L, "Ariadna Rubio", LocalDate.of(2023,11,25));
 
-    @Ignore
+    @Test
+    @WithMockUser(username = "suresh@ga.com")
     public void createPatientDoctor() throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
         when(doctorService.createPatientDoctor(Mockito.any(Long.class), Mockito.any(Patient.class))).thenReturn(Optional.ofNullable(PATIENT_2));
         mockMvc.perform(MockMvcRequestBuilders.post("/api/doctors/1/patients/")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(PATIENT_2)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(PATIENT_2)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.message").value("success"));
+                .andExpect(jsonPath("$.message").value("success"))
+                .andDo(print());
     }
 
 
