@@ -194,10 +194,38 @@ public class DoctorControllerTest {
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + generateJwtToken()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", notNullValue()))
+                .andExpect(jsonPath("$.message").value("success"))
                 .andExpect(jsonPath("$.data.id").value(PATIENT_3.getId()))
                 .andExpect(jsonPath("$.data.name").value(PATIENT_3.getName()))
                 .andExpect((jsonPath("$.data.birthDate")).value(PATIENT_3.getBirthDate().toString()));
     }
+
+    @Test
+    @WithMockUser(username = "suresh@ga.com")
+    public void updatePatientById() throws Exception {
+
+        objectMapper.registerModule(new JavaTimeModule());
+
+        MyDoctorDetails doctorDetails = setup();
+        // Mock the behavior of myDoctorDetailsService to load the user details
+        when(myDoctorDetailsService.loadUserByUsername("suresh@ga.com")).thenReturn(doctorDetails);
+
+        Patient updatePatient = new Patient(1L, "Dhrubo", LocalDate.of(2023, 10, 2));
+
+        when(doctorService.updatePatientById(Mockito.any(Long.class), Mockito.any(Long.class), Mockito.any(Patient.class))).thenReturn(Optional.of(updatePatient));
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/doctors/patients/1/")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(PATIENT_1))
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + generateJwtToken()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", notNullValue()))
+                .andExpect(jsonPath("$.message").value("successfully updated!"))
+                .andExpect(jsonPath("$.data.id").value(updatePatient.getId()))
+                .andExpect(jsonPath("$.data.name").value(updatePatient.getName()))
+                .andExpect((jsonPath("$.data.birthDate")).value(updatePatient.getBirthDate().toString()));
+    }
+
 
     private String generateJwtToken() {
         // Create a JWT token with a specific subject and expiration time
