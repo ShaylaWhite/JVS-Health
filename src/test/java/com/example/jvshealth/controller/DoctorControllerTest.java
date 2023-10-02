@@ -226,6 +226,29 @@ public class DoctorControllerTest {
                 .andExpect((jsonPath("$.data.birthDate")).value(updatePatient.getBirthDate().toString()));
     }
 
+    @Test
+    @WithMockUser(username = "suresh@ga.com")
+    public void deletePatientById() throws Exception {
+
+        objectMapper.registerModule(new JavaTimeModule());
+
+        MyDoctorDetails doctorDetails = setup();
+        // Mock the behavior of myDoctorDetailsService to load the user details
+        when(myDoctorDetailsService.loadUserByUsername("suresh@ga.com")).thenReturn(doctorDetails);
+
+        when(doctorService.deletePatientById(Mockito.any(Long.class), Mockito.any(Long.class))).thenReturn(Optional.of(PATIENT_1));
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/doctors/patients/1/")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + generateJwtToken()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", notNullValue()))
+                .andExpect(jsonPath("$.message").value("successfully deleted!"))
+                .andExpect(jsonPath("$.data.id").value(PATIENT_1.getId()))
+                .andExpect(jsonPath("$.data.name").value(PATIENT_1.getName()))
+                .andExpect((jsonPath("$.data.birthDate")).value(PATIENT_1.getBirthDate().toString()));
+    }
+
 
     private String generateJwtToken() {
         // Create a JWT token with a specific subject and expiration time
