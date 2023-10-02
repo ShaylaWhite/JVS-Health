@@ -2,6 +2,7 @@ package com.example.jvshealth.controller;
 
 import com.example.jvshealth.models.Doctor;
 import com.example.jvshealth.models.Patient;
+import com.example.jvshealth.models.Prescription;
 import com.example.jvshealth.repository.DoctorRepository;
 import com.example.jvshealth.request.LoginRequest;
 import com.example.jvshealth.response.LoginResponse;
@@ -248,6 +249,40 @@ public class DoctorControllerTest {
                 .andExpect(jsonPath("$.data.name").value(PATIENT_1.getName()))
                 .andExpect((jsonPath("$.data.birthDate")).value(PATIENT_1.getBirthDate().toString()));
     }
+
+    Prescription PRESCRIPTION_1 = new Prescription(1L, RECORD_1, PATIENT_1, "Flu shot");
+
+    Prescription PRESCRIPTION_2 = new Prescription(2L, RECORD_2, PATIENT_3, "Bird Flu shot");
+
+    Prescription PRESCRIPTION_3 = new Prescription(2L, RECORD_2, PATIENT_3, "Swine Flu shot");
+
+    @Test
+    @WithMockUser(username = "suresh@ga.com")
+    public void createPrescriptionPatient() throws Exception {
+        objectMapper.registerModule(new JavaTimeModule());
+
+        // Mock the behavior of the doctorService to return a specific patient
+        when(doctorService.createPrescriptionPatient(Mockito.any(Long.class), Mockito.any(Long.class), Mockito.any(Prescription.class)))
+                .thenReturn(Optional.ofNullable(PRESCRIPTION_1));
+
+        MyDoctorDetails doctorDetails = setup();
+
+        // Mock the behavior of myDoctorDetailsService to load the user details
+        when(myDoctorDetailsService.loadUserByUsername("suresh@ga.com")).thenReturn(doctorDetails);
+
+        // Prepare and perform the POST request to the endpoint
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/doctors/patients/1/prescriptions/")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + generateJwtToken())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(PRESCRIPTION_1)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$", notNullValue()))
+                .andExpect(jsonPath("$.message").value("success"))
+                .andExpect(jsonPath("$.data.id").value(PRESCRIPTION_1.getId()))
+                .andExpect(jsonPath("$.data.details").value(PRESCRIPTION_1.getDetails()))
+                .andDo(print());
+    }
+
 
 
     private String generateJwtToken() {
