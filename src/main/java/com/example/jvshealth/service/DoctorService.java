@@ -156,7 +156,7 @@ public class DoctorService {
 
     }
 // GET ALL PRESCRIPTIONS
-    public List<Prescription> getAllPrescriptionsPatients(Long doctorId, Long patientId) {
+    public List<Prescription> getAllPrescriptionsPatient(Long doctorId, Long patientId) {
         Optional<Doctor> doctorOptional = doctorRepository.findById(doctorId);
         if (doctorOptional.isPresent()) {
             Optional<Patient> patientOptional = Optional.of(patientRepository.findByDoctorId(doctorId));

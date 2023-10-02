@@ -170,8 +170,7 @@ public class DoctorControllerTest {
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/doctors/patients/")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + generateJwtToken())
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(patientList)))
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data", hasSize(3)))
                 .andExpect(jsonPath("$.message").value("success"))
@@ -283,7 +282,29 @@ public class DoctorControllerTest {
                 .andDo(print());
     }
 
+    @Test
+    @WithMockUser(username = "suresh@ga.com")
+    public void getAllPrescriptionsPatient() throws Exception {
+        objectMapper.registerModule(new JavaTimeModule());
 
+        MyDoctorDetails doctorDetails = setup();
+
+        // Mock the behavior of myDoctorDetailsService to load the user details
+        when(myDoctorDetailsService.loadUserByUsername("suresh@ga.com")).thenReturn(doctorDetails);
+
+        List<Prescription> prescriptionList = Arrays.asList(PRESCRIPTION_1, PRESCRIPTION_2, PRESCRIPTION_3);
+
+        when(doctorService.getAllPrescriptionsPatient(Mockito.any(Long.class), Mockito.any(Long.class))).thenReturn(prescriptionList);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/doctors/patients/2/prescriptions/")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + generateJwtToken())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", notNullValue()))
+                .andExpect(jsonPath("$.data", hasSize(3)))
+                .andExpect(jsonPath("$.message").value("success"))
+                .andDo(print());
+    }
 
     private String generateJwtToken() {
         // Create a JWT token with a specific subject and expiration time
