@@ -81,6 +81,8 @@ public class DoctorControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+    @Autowired
+    ObjectMapper objectMapper;
 
     Doctor RECORD_1 = new Doctor(1L, "Merrill", "Huang", "merrill@ga.com");
 
@@ -130,19 +132,13 @@ public class DoctorControllerTest {
     @Test
     @WithMockUser(username = "suresh@ga.com")
     public void createPatientDoctor() throws Exception {
-        ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
-
-        // Create a Doctor object with known properties
-        Doctor sureshRecord = new Doctor(1L, "Suresh", "Sigera", "suresh@ga.com");
-        sureshRecord.setPassword("password");
 
         // Mock the behavior of the doctorService to return a specific patient
         when(doctorService.createPatientDoctor(Mockito.any(Long.class), Mockito.any(Patient.class)))
                 .thenReturn(Optional.ofNullable(PATIENT_2));
 
-        // Create a MyDoctorDetails instance associated with the user
-        MyDoctorDetails doctorDetails = new MyDoctorDetails(sureshRecord);
+        MyDoctorDetails doctorDetails = setup();
 
         // Mock the behavior of myDoctorDetailsService to load the user details
         when(myDoctorDetailsService.loadUserByUsername("suresh@ga.com")).thenReturn(doctorDetails);
@@ -160,21 +156,16 @@ public class DoctorControllerTest {
     @Test
     @WithMockUser(username = "suresh@ga.com")
     public void getAllPatients() throws Exception {
-        ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
 
-        // Create a Doctor object with known properties
-        Doctor sureshRecord = new Doctor(1L, "Suresh", "Sigera", "suresh@ga.com");
-        sureshRecord.setPassword("password");
+        MyDoctorDetails doctorDetails = setup();
+
+        // Mock the behavior of myDoctorDetailsService to load the user details
+        when(myDoctorDetailsService.loadUserByUsername("suresh@ga.com")).thenReturn(doctorDetails);
 
         List<Patient> patientList = Arrays.asList(PATIENT_1, PATIENT_2, PATIENT_3);
 
         when(doctorService.getAllPatients(Mockito.any(Long.class))).thenReturn(patientList);
-
-        MyDoctorDetails doctorDetails = new MyDoctorDetails(sureshRecord);
-
-        // Mock the behavior of myDoctorDetailsService to load the user details
-        when(myDoctorDetailsService.loadUserByUsername("suresh@ga.com")).thenReturn(doctorDetails);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/doctors/patients/")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + generateJwtToken())
@@ -186,6 +177,28 @@ public class DoctorControllerTest {
                 .andDo(print());
     }
 
+    @Test
+    @WithMockUser(username = "suresh@ga.com")
+    public void getPatientById() throws Exception {
+
+        objectMapper.registerModule(new JavaTimeModule());
+
+        MyDoctorDetails doctorDetails = setup();
+        // Mock the behavior of myDoctorDetailsService to load the user details
+        when(myDoctorDetailsService.loadUserByUsername("suresh@ga.com")).thenReturn(doctorDetails);
+
+        when(doctorService.getPatientById(Mockito.any(Long.class), Mockito.any(Long.class))).thenReturn(Optional.ofNullable(PATIENT_3));
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/doctors/patients/3/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + generateJwtToken()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", notNullValue()))
+                .andExpect(jsonPath("$.data.id").value(PATIENT_3.getId()))
+                .andExpect(jsonPath("$.data.name").value(PATIENT_3.getName()))
+                .andExpect((jsonPath("$.data.birthDate")).value(PATIENT_3.getBirthDate().toString()));
+    }
+
     private String generateJwtToken() {
         // Create a JWT token with a specific subject and expiration time
         JwtBuilder jwtBuilder = Jwts.builder()
@@ -194,5 +207,14 @@ public class DoctorControllerTest {
                 .setExpiration(new Date((new Date()).getTime() + 86400000))
                 .signWith(SignatureAlgorithm.HS256, "C6UlILsE6GJwNqwCTkkvJj9O653yJUoteWMLfYyrc3vaGrrTOrJFAUD1wEBnnposzcQl");
         return jwtBuilder.compact();
+    }
+
+    private MyDoctorDetails setup() {
+
+        // Create a Doctor object with known properties
+        Doctor sureshRecord = new Doctor(1L, "Suresh", "Sigera", "suresh@ga.com");
+        sureshRecord.setPassword("password");
+
+        return new MyDoctorDetails(sureshRecord);
     }
 }
