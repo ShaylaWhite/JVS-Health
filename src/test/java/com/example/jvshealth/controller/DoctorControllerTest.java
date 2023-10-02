@@ -197,7 +197,8 @@ public class DoctorControllerTest {
                 .andExpect(jsonPath("$.message").value("success"))
                 .andExpect(jsonPath("$.data.id").value(PATIENT_3.getId()))
                 .andExpect(jsonPath("$.data.name").value(PATIENT_3.getName()))
-                .andExpect((jsonPath("$.data.birthDate")).value(PATIENT_3.getBirthDate().toString()));
+                .andExpect((jsonPath("$.data.birthDate")).value(PATIENT_3.getBirthDate().toString()))
+                .andDo(print());
     }
 
     @Test
@@ -223,7 +224,8 @@ public class DoctorControllerTest {
                 .andExpect(jsonPath("$.message").value("successfully updated!"))
                 .andExpect(jsonPath("$.data.id").value(updatePatient.getId()))
                 .andExpect(jsonPath("$.data.name").value(updatePatient.getName()))
-                .andExpect((jsonPath("$.data.birthDate")).value(updatePatient.getBirthDate().toString()));
+                .andExpect((jsonPath("$.data.birthDate")).value(updatePatient.getBirthDate().toString()))
+                .andDo(print());
     }
 
     @Test
@@ -246,7 +248,8 @@ public class DoctorControllerTest {
                 .andExpect(jsonPath("$.message").value("successfully deleted!"))
                 .andExpect(jsonPath("$.data.id").value(PATIENT_1.getId()))
                 .andExpect(jsonPath("$.data.name").value(PATIENT_1.getName()))
-                .andExpect((jsonPath("$.data.birthDate")).value(PATIENT_1.getBirthDate().toString()));
+                .andExpect((jsonPath("$.data.birthDate")).value(PATIENT_1.getBirthDate().toString()))
+                .andDo(print());
     }
 
     Prescription PRESCRIPTION_1 = new Prescription(1L, RECORD_1, PATIENT_1, "Flu shot");
@@ -326,6 +329,32 @@ public class DoctorControllerTest {
                 .andExpect(jsonPath("$.message").value("success"))
                 .andExpect(jsonPath("$.data.id").value(PRESCRIPTION_3.getId()))
                 .andExpect(jsonPath("$.data.details").value(PRESCRIPTION_3.getDetails()))
+                .andDo(print());
+    }
+
+    @Test
+    @WithMockUser(username = "suresh@ga.com")
+    public void updatePrescriptionById() throws Exception {
+        objectMapper.registerModule(new JavaTimeModule());
+
+        MyDoctorDetails doctorDetails = setup();
+
+        // Mock the behavior of myDoctorDetailsService to load the user details
+        when(myDoctorDetailsService.loadUserByUsername("suresh@ga.com")).thenReturn(doctorDetails);
+
+        Prescription updatePrescription = new Prescription(1L, RECORD_2, PATIENT_2,"Pfizer");
+
+        when(doctorService.updatePrescriptionById(Mockito.any(Long.class), Mockito.any(Long.class), Mockito.any(Long.class), Mockito.any(Prescription.class))).thenReturn(Optional.ofNullable(updatePrescription));
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/doctors/patients/2/prescriptions/1/")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + generateJwtToken())
+                        .content(objectMapper.writeValueAsString(updatePrescription))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", notNullValue()))
+                .andExpect(jsonPath("$.message").value("successfully updated!"))
+                .andExpect(jsonPath("$.data.id").value(updatePrescription.getId()))
+                .andExpect(jsonPath("$.data.details").value(updatePrescription.getDetails()))
                 .andDo(print());
     }
 
