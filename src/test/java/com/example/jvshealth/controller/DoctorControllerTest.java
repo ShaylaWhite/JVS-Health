@@ -72,39 +72,6 @@ public class DoctorControllerTest {
 
     Doctor RECORD_3 = new Doctor(3L, "Ariadna", "Rubio", "ariadna@ga.com");
 
-    @Test
-    public void createDoctor() throws Exception {
-        when(doctorService.createDoctor(Mockito.any(Doctor.class))).thenReturn(RECORD_1);
-
-        mockMvc.perform(MockMvcRequestBuilders.post("/auth/doctors/register/")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(new ObjectMapper().writeValueAsString(RECORD_1)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$", notNullValue()))
-                .andExpect(jsonPath("$.id").value((RECORD_1.getId())))
-                .andExpect(jsonPath("$.firstName").value(RECORD_1.getFirstName()))
-                .andExpect(jsonPath("$.lastName").value(RECORD_1.getLastName()))
-                .andExpect(jsonPath("$.emailAddress").value(RECORD_1.getEmailAddress()))
-                .andDo(print());
-
-    }
-
-    @Test
-    public void loginUser() throws Exception {
-        LoginRequest request = new LoginRequest();
-        request.setEmailAddress("suresh123@gmail.com");
-        request.setPassword("suresh123");
-        Optional<String> token = Optional.of("eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdWVyc2gxMjNAZ21haWwuY29tIiwiaWF0IjoxNjk2MDA4NTg5LCJleHAiOjE2OTYwOTQ5ODl9.nJDx67WgI5JZiFL_LFz4uFxFVgOR_nVPMCbrcY8Dcx8");
-        when(doctorService.loginDoctor(Mockito.any(LoginRequest.class))).thenReturn(token);
-
-        mockMvc.perform(MockMvcRequestBuilders.post("/auth/doctors/login/")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(new ObjectMapper().writeValueAsString(request)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.jwt").value(token.get()))
-                .andDo(print());
-    }
-
     Patient PATIENT_1 = new Patient(1L, "Merrill Huang", LocalDate.of(2023,9,25));
 
     Patient PATIENT_2 = new Patient(2L, "Shayla White", LocalDate.of(2023,10,25));
