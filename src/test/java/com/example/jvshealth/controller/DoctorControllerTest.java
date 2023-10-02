@@ -48,11 +48,12 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
-import static org.hamcrest.Matchers.notNullValue;
-
+import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
@@ -152,6 +153,35 @@ public class DoctorControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(PATIENT_2)))
                 .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.message").value("success"))
+                .andDo(print());
+    }
+
+    @Test
+    @WithMockUser(username = "suresh@ga.com")
+    public void getAllPatients() throws Exception {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+
+        // Create a Doctor object with known properties
+        Doctor sureshRecord = new Doctor(1L, "Suresh", "Sigera", "suresh@ga.com");
+        sureshRecord.setPassword("password");
+
+        List<Patient> patientList = Arrays.asList(PATIENT_1, PATIENT_2, PATIENT_3);
+
+        when(doctorService.getAllPatients(Mockito.any(Long.class))).thenReturn(patientList);
+
+        MyDoctorDetails doctorDetails = new MyDoctorDetails(sureshRecord);
+
+        // Mock the behavior of myDoctorDetailsService to load the user details
+        when(myDoctorDetailsService.loadUserByUsername("suresh@ga.com")).thenReturn(doctorDetails);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/doctors/patients/")
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + generateJwtToken())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(patientList)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data", hasSize(3)))
                 .andExpect(jsonPath("$.message").value("success"))
                 .andDo(print());
     }
