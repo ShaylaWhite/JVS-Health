@@ -5,9 +5,14 @@ import com.example.jvshealth.models.Patient;
 import com.example.jvshealth.repository.DoctorRepository;
 import com.example.jvshealth.request.LoginRequest;
 import com.example.jvshealth.response.LoginResponse;
+import com.example.jvshealth.security.MyDoctorDetails;
+import com.example.jvshealth.security.MyDoctorDetailsService;
 import com.example.jvshealth.service.DoctorService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import io.jsonwebtoken.JwtBuilder;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,16 +35,20 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.Optional;
 
 import static org.hamcrest.Matchers.notNullValue;
@@ -55,35 +64,61 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-
-
+@RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
 @ComponentScan(basePackages = "com.example")
-
 public class DoctorControllerTest {
 
     @Autowired
     @MockBean
     private DoctorService doctorService;
 
-    @InjectMocks
-    private DoctorController doctorController;
-
-    @Mock
-    private DoctorRepository doctorRepository;
+    @MockBean
+    private MyDoctorDetailsService myDoctorDetailsService;
 
     @Autowired
     private MockMvc mockMvc;
 
-    @Mock
-    private PasswordEncoder passwordEncoder;
 
     Doctor RECORD_1 = new Doctor(1L, "Merrill", "Huang", "merrill@ga.com");
 
     Doctor RECORD_2 = new Doctor(2L, "Shayla", "White", "shayla@ga.com");
 
     Doctor RECORD_3 = new Doctor(3L, "Ariadna", "Rubio", "ariadna@ga.com");
+
+    @Test
+    public void createDoctor() throws Exception {
+        when(doctorService.createDoctor(Mockito.any(Doctor.class))).thenReturn(RECORD_1);
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/auth/doctors/register/")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(RECORD_1)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", notNullValue()))
+                .andExpect(jsonPath("$.id").value((RECORD_1.getId())))
+                .andExpect(jsonPath("$.firstName").value(RECORD_1.getFirstName()))
+                .andExpect(jsonPath("$.lastName").value(RECORD_1.getLastName()))
+                .andExpect(jsonPath("$.emailAddress").value(RECORD_1.getEmailAddress()))
+                .andDo(print());
+
+    }
+
+    @Test
+    public void loginUser() throws Exception {
+        LoginRequest request = new LoginRequest();
+        request.setEmailAddress("suresh123@gmail.com");
+        request.setPassword("suresh123");
+        Optional<String> token = Optional.of("eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdWVyc2gxMjNAZ21haWwuY29tIiwiaWF0IjoxNjk2MDA4NTg5LCJleHAiOjE2OTYwOTQ5ODl9.nJDx67WgI5JZiFL_LFz4uFxFVgOR_nVPMCbrcY8Dcx8");
+        when(doctorService.loginDoctor(Mockito.any(LoginRequest.class))).thenReturn(token);
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/auth/doctors/login/")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.jwt").value(token.get()))
+                .andDo(print());
+    }
 
     Patient PATIENT_1 = new Patient(1L, "Merrill Huang", LocalDate.of(2023,9,25));
 
@@ -92,17 +127,42 @@ public class DoctorControllerTest {
     Patient PATIENT_3 = new Patient(3L, "Ariadna Rubio", LocalDate.of(2023,11,25));
 
     @Test
+    @WithMockUser(username = "suresh@ga.com")
     public void createPatientDoctor() throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
-        when(doctorService.createPatientDoctor(Mockito.any(Long.class), Mockito.any(Patient.class))).thenReturn(Optional.ofNullable(PATIENT_2));
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/doctors/1/patients/")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(PATIENT_2)))
+
+        // Create a Doctor object with known properties
+        Doctor sureshRecord = new Doctor(1L, "Suresh", "Sigera", "suresh@ga.com");
+        sureshRecord.setPassword("password");
+
+        // Mock the behavior of the doctorService to return a specific patient
+        when(doctorService.createPatientDoctor(Mockito.any(Long.class), Mockito.any(Patient.class)))
+                .thenReturn(Optional.ofNullable(PATIENT_2));
+
+        // Create a MyDoctorDetails instance associated with the user
+        MyDoctorDetails doctorDetails = new MyDoctorDetails(sureshRecord);
+
+        // Mock the behavior of myDoctorDetailsService to load the user details
+        when(myDoctorDetailsService.loadUserByUsername("suresh@ga.com")).thenReturn(doctorDetails);
+
+        // Prepare and perform the POST request to the endpoint
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/doctors/patients/")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + generateJwtToken())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(PATIENT_2)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.message").value("success"));
+                .andExpect(jsonPath("$.message").value("success"))
+                .andDo(print());
     }
 
-
-
+    private String generateJwtToken() {
+        // Create a JWT token with a specific subject and expiration time
+        JwtBuilder jwtBuilder = Jwts.builder()
+                .setIssuedAt(new Date())
+                .setSubject("suresh@ga.com")
+                .setExpiration(new Date((new Date()).getTime() + 86400000))
+                .signWith(SignatureAlgorithm.HS256, "C6UlILsE6GJwNqwCTkkvJj9O653yJUoteWMLfYyrc3vaGrrTOrJFAUD1wEBnnposzcQl");
+        return jwtBuilder.compact();
+    }
 }
