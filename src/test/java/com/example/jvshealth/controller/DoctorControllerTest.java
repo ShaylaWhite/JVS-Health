@@ -358,6 +358,29 @@ public class DoctorControllerTest {
                 .andDo(print());
     }
 
+    @Test
+    @WithMockUser(username = "suresh@ga.com")
+    public void deletePrescriptionById() throws Exception {
+        objectMapper.registerModule(new JavaTimeModule());
+
+        MyDoctorDetails doctorDetails = setup();
+
+        // Mock the behavior of myDoctorDetailsService to load the user details
+        when(myDoctorDetailsService.loadUserByUsername("suresh@ga.com")).thenReturn(doctorDetails);
+
+        when(doctorService.deletePrescriptionById(Mockito.any(Long.class), Mockito.any(Long.class), Mockito.any(Long.class))).thenReturn(Optional.ofNullable(PRESCRIPTION_1));
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/doctors/patients/1/prescriptions/1/")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + generateJwtToken())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", notNullValue()))
+                .andExpect(jsonPath("$.message").value("successfully deleted!"))
+                .andExpect(jsonPath("$.data.id").value(PRESCRIPTION_1.getId()))
+                .andExpect(jsonPath("$.data.details").value(PRESCRIPTION_1.getDetails()))
+                .andDo(print());
+    }
+
     private String generateJwtToken() {
         // Create a JWT token with a specific subject and expiration time
         JwtBuilder jwtBuilder = Jwts.builder()
