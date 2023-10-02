@@ -1,5 +1,9 @@
 package com.example.jvshealth.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+
 import javax.persistence.*;
 
 @Entity
@@ -13,10 +17,12 @@ public class Prescription {
 
     @ManyToOne
     @JoinColumn(name = "doctor_id")
+@JsonIgnore
     private Doctor doctor;
 
     @ManyToOne
     @JoinColumn(name = "patient_id")
+@JsonIgnore
     private Patient patient;
 
     @Column
