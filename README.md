@@ -1,18 +1,34 @@
 
 
-## JVS-Health API
+# JVS-Health API
 
 ## Description
 The JVS-Health API is a comprehensive Health Management System designed to efficiently manage medical information, specifically focusing on Doctors, Patients, and Prescriptions. It enables healthcare providers to perform essential tasks such as registration, authentication, patient management, prescription assignments/mangement.
 
-## Models
+## General Approach
+
+The project follows a structured approach to building a secure and functional REST API for library management. It utilizes Spring Boot for creating a web application, integrates Spring Security with JWT token authentication for user access, and utilizes the H2 database to store book, author, and category data. The application adheres to the principles of the MVC (Model-View-Controller) design pattern by separating controllers and services for improved code organization.
+
+## Tools and Technologies Used
+
+- Spring Boot
+- Spring Security
+- JWT (JSON Web Tokens)
+- H2 Database
+- JavaDoc
+- Git and GitHub
+- Spring Profiles
+- Lucidchart: Lucidchart is a cloud-based diagramming tool that offers a wide range of diagram templates, including ERDs. It provides an intuitive interface for creating and collaborating on diagrams.
+- Website: Lucidchart
+
+# Models
 The API works with the following models:
 
 - Doctor: Represents registered healthcare professionals.
 - Patient: Represents individuals under medical care.
 - Prescriptions : Represents specific prescription  treatments.
 
-## User Stories
+# User Stories
 
 ### User Story 1: Doctor Registration
 
@@ -55,7 +71,6 @@ As a Provider, I want to assign prescriptions from the database to my patients.
 - Upon successful assignment, the prescription's availability status changes, and it's associated with the patient.
 
 
-
 ### User Story 6: Doctor Update Prescription's Information
 
  As a Provider, I want to manage patients in the system, including adding, updating, and deleting prescription information.
@@ -69,7 +84,88 @@ As a Provider, I want to assign prescriptions from the database to my patients.
 - I can delete prescriptions from the system.
 
 
-### API Endpoints
+# Business Logic for JVS-Health API
+
+The business logic for the JVS-Health API, which includes key functionalities for managing Doctors, Patients, and Prescriptions.
+
+## Doctor Management
+
+### Registration of Doctors
+
+- Doctors can register themselves by providing their details, including first name, last name, email address, and password.
+- Passwords are securely hashed before being stored in the database.
+- Doctors' email addresses must be unique to ensure no duplicate registrations.
+
+### Doctor Authentication
+
+- Registered Doctors can log in to the system using their email address and password.
+- Upon successful authentication, the system generates a JSON Web Token (JWT) for the Doctor, which is used for secure access to protected endpoints.
+
+## Patient Management
+
+### Patient Creation
+
+- Doctors can create patient profiles, providing details such as the patient's name and birthdate.
+- Patients are associated with the Doctor who created their profile.
+- Duplicate patient profiles with the same name and birthdate for the same Doctor are not allowed.
+
+### Fetching Patient Information
+
+- Doctors can retrieve information about their patients, including their names and birthdates.
+- Patients are associated with the Doctor who manages them.
+
+### Updating Patient Information
+
+- Doctors can update patient information, including their name and birthdate.
+- The system ensures that updates are only allowed for patients associated with the authenticated Doctor.
+
+### Patient Deletion
+
+- Doctors can delete patient profiles they manage.
+- Patient records are removed from the system when deleted.
+
+## Prescription Management
+
+### Creating Prescriptions
+
+- Doctors can create prescriptions for their patients, specifying details about the prescription.
+- Each prescription is associated with a Doctor and a Patient.
+
+### Fetching Prescriptions
+
+- Doctors can retrieve a list of prescriptions for a specific patient.
+- The system ensures that Doctors can only access prescriptions for their own patients.
+
+### Updating Prescriptions
+
+- Doctors can update prescription details, such as the prescription details itself.
+- Only the Doctor who created the prescription can modify it.
+
+### Deleting Prescriptions
+
+- Doctors can delete prescriptions for their patients.
+- Deleted prescriptions are removed from the system.
+
+### Fetching Prescription by ID
+
+- Doctors can retrieve a specific prescription by its unique ID.
+
+## Prescription Validation
+
+- The system validates the authenticity and authorization of Doctors for each action.
+- Access control is implemented to ensure Doctors can only manage their own patients and prescriptions.
+
+## Authentication and Security
+
+- Authentication is performed using JWT (JSON Web Tokens) to ensure secure access to protected endpoints.
+- Passwords are securely hashed and stored in the database.
+- JWT tokens are generated upon successful login and must be included in the headers of protected API requests for authorization.
+- A custom user details service and authentication filter are implemented to handle user authentication.
+
+The JVS-Health API ensures data privacy, access control, and a secure environment for healthcare providers to manage medical information efficiently. It enables Doctors to register, authenticate, manage patients, and create and manage prescriptions for their patients while maintaining the confidentiality and integrity of the medical data.
+
+
+# API Endpoints
 
 To interact with the JVS-Health API, you can use the following endpoints:
 
@@ -86,7 +182,7 @@ To interact with the JVS-Health API, you can use the following endpoints:
 | PUT          | `/api/doctors/patients/{patientId}/prescriptions/{prescriptionId}`    | Update prescription details (Admin, requires JWT)                   | Admin   |
 | DELETE       | `/api/doctors/patients/{patientId}/prescriptions/{prescriptionId}`    | Delete prescription details (Admin, requires JWT)                   | Admin   |
 
-## ERD Tables
+# ERD Tables
 
 **Doctor Table:**
 Fields:
@@ -111,13 +207,13 @@ Fields:
 
 
 
-## ERD Diagram
+# ERD Diagram
 
 <img src="/JVS Health.png" alt="JVS Health ERD Diagram" title="JVS Health ERD Diagram">
 
+## Unsolved Problems and Hurdles
 
-
-## Annotations
+# Annotations
 
 How to implement Many to Many Tables
 - https://www.baeldung.com/jpa-many-to-many
