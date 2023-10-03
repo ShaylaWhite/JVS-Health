@@ -10,7 +10,7 @@ The JVS-Health API is a comprehensive Health Management System designed to effic
 
 ## General Approach
 
-The project follows a structured approach to building a secure and functional REST API for library management. It utilizes Spring Boot for creating a web application, integrates Spring Security with JWT token authentication for user access, and utilizes the H2 database to store book, author, and category data. The application adheres to the principles of the MVC (Model-View-Controller) design pattern by separating controllers and services for improved code organization.
+The project follows a structured approach to building a secure and functional REST API for JVS Health management. It utilizes Spring Boot for creating a web application, integrates Spring Security with JWT token authentication for user access, and utilizes the H2 database to store data related to doctors, patients, and prescriptions. The application adheres to the principles of the MVC (Model-View-Controller) design pattern by separating controllers and services for improved code organization.
 
 ## Tools and Technologies Used
 
