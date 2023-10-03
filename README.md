@@ -1,7 +1,9 @@
 
 
-# JVS-Health API
+
 <img src="/light blue creative modern medical clinic presentation.png" alt="JVS Health ERD Diagram" title="JVS Health ERD Diagram"> 
+
+
 
 ## Description
 The JVS-Health API is a comprehensive Health Management System designed to efficiently manage medical information, specifically focusing on Doctors, Patients, and Prescriptions. It enables healthcare providers to perform essential tasks such as registration, authentication, patient management, prescription assignments/mangement.
