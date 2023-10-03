@@ -12,13 +12,22 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
-
+/**
+ * The DoctorController class handles doctor-specific operations in the JvsHealth application.
+ *
+ * @RestController indicates that this class is a Spring REST Controller.
+ * @RequestMapping specifies the base URL path for all endpoints in this controller.
+ */
 @RestController
 @RequestMapping(path = "/api/doctors/")
 public class DoctorController {
 
     private DoctorService doctorService;
-
+    /**
+     * Constructor-based autowiring of the DoctorService dependency.
+     *
+     * @param doctorService The DoctorService implementation to be injected.
+     */
     @Autowired
     public void setDoctorService(DoctorService doctorService) {
         this.doctorService = doctorService;
@@ -27,7 +36,12 @@ public class DoctorController {
 
 
     static HashMap<String, Object> message = new HashMap<>();
-
+    /**
+     * Endpoint for creating a new patient under the current doctor.
+     *
+     * @param patientObject The Patient object representing the patient to be created.
+     * @return A ResponseEntity indicating success or conflict along with a message and data.
+     */
     @PostMapping(path = "/patients/")
     public ResponseEntity<?> createPatientDoctor(@RequestBody Patient patientObject) {
         Long doctorId = DoctorService.getCurrentLoggedInDoctor().getId();
@@ -41,7 +55,11 @@ public class DoctorController {
             return new ResponseEntity<>(message, HttpStatus.CONFLICT);
         }
     }
-
+    /**
+     * Endpoint for retrieving all patients under the current doctor.
+     *
+     * @return A ResponseEntity containing a list of patients or a not found message.
+     */
     @GetMapping(path = "/patients/")
     public ResponseEntity<?> getAllPatients() {
         Long doctorId = DoctorService.getCurrentLoggedInDoctor().getId();
@@ -55,6 +73,12 @@ public class DoctorController {
             return new ResponseEntity<>(message, HttpStatus.OK);
         }
     }
+    /**
+     * Endpoint for retrieving a patient by their ID under the current doctor.
+     *
+     * @param patientId The ID of the patient to retrieve.
+     * @return A ResponseEntity containing the patient data or a not found message.
+     */
     @GetMapping(path = "/patients/{patientId}")
     public ResponseEntity<?> getPatientById(@PathVariable(value = "patientId") Long patientId) {
         Long doctorId = DoctorService.getCurrentLoggedInDoctor().getId();
@@ -68,7 +92,13 @@ public class DoctorController {
             return new ResponseEntity<>(message, HttpStatus.OK);
         }
     }
-
+    /**
+     * Endpoint for updating a patient's information by their ID under the current doctor.
+     *
+     * @param patientId     The ID of the patient to update.
+     * @param patientObject The updated Patient object.
+     * @return A ResponseEntity indicating success or not found along with a message and data.
+     */
 @PutMapping(path = "/patients/{patientId}")
  public ResponseEntity<?>  updatePatientById(@PathVariable(value = "patientId") Long patientId ,@RequestBody Patient patientObject){
     Long doctorId = DoctorService.getCurrentLoggedInDoctor().getId();
@@ -82,7 +112,12 @@ public class DoctorController {
         return new ResponseEntity<>(message, HttpStatus.OK);
     }
 }
-
+    /**
+     * Endpoint for deleting a patient by their ID under the current doctor.
+     *
+     * @param patientId The ID of the patient to delete.
+     * @return A ResponseEntity indicating success or not found along with a message and data.
+     */
     @DeleteMapping(path = "/patients/{patientId}")
     public ResponseEntity<?> deletePatientById(@PathVariable(value = "patientId") Long patientId ){
         Long doctorId = DoctorService.getCurrentLoggedInDoctor().getId();
@@ -98,6 +133,13 @@ public class DoctorController {
     }
 
     //CRUD FOR PRESCRIPTION
+    /**
+     * Endpoint for creating a prescription for a specific patient under the current doctor.
+     *
+     * @param patientId        The ID of the patient for whom the prescription is created.
+     * @param prescriptionObject The Prescription object representing the prescription to be created.
+     * @return A ResponseEntity indicating success or conflict along with a message and data.
+     */
     @PostMapping(path = "/patients/{patientId}/prescriptions/")
     public ResponseEntity<?> createPrescriptionPatient(@PathVariable(value = "patientId") Long patientId,@RequestBody Prescription prescriptionObject) {
         Long doctorId = DoctorService.getCurrentLoggedInDoctor().getId();
@@ -112,6 +154,14 @@ public class DoctorController {
             return new ResponseEntity<>(message, HttpStatus.CONFLICT);
         }
     }
+
+    /**
+     * Endpoint for retrieving all prescriptions for a specific patient under the current doctor.
+     *
+     * @param patientId The ID of the patient for whom prescriptions are retrieved.
+     * @return A ResponseEntity containing a list of prescriptions or a not found message.
+     */
+
     @GetMapping(path = "/patients/{patientId}/prescriptions/")
     public ResponseEntity<?> getAllPrescriptionsPatient(@PathVariable(value="patientId") Long patientId) {
         Long doctorId = DoctorService.getCurrentLoggedInDoctor().getId();
@@ -125,6 +175,13 @@ public class DoctorController {
             return new ResponseEntity<>(message, HttpStatus.OK);
         }
     }
+    /**
+     * Endpoint for retrieving a prescription by its ID for a specific patient under the current doctor.
+     *
+     * @param patientId     The ID of the patient for whom the prescription belongs.
+     * @param prescriptionId The ID of the prescription to retrieve.
+     * @return A ResponseEntity containing the prescription data or a not found message.
+     */
     @GetMapping(path = "/patients/{patientId}/prescriptions/{prescriptionId}")
     public ResponseEntity<?> getPrescriptionById(@PathVariable(value="patientId") Long patientId, @PathVariable(value="prescriptionId") Long prescriptionId) {
         Long doctorId = DoctorService.getCurrentLoggedInDoctor().getId();
@@ -138,6 +195,14 @@ public class DoctorController {
             return new ResponseEntity<>(message, HttpStatus.OK);
         }
     }
+    /**
+     * Endpoint for updating a prescription by its ID for a specific patient under the current doctor.
+     *
+     * @param patientId         The ID of the patient for whom the prescription belongs.
+     * @param prescriptionId    The ID of the prescription to update.
+     * @param prescriptionObject The updated Prescription object.
+     * @return A ResponseEntity indicating success or not found along with a message and data.
+     */
     @PutMapping(path = "/patients/{patientId}/prescriptions/{prescriptionId}")
     public ResponseEntity<?>  updatePrescriptionById(@PathVariable(value="patientId") Long patientId, @PathVariable(value="prescriptionId") Long prescriptionId, @RequestBody Prescription prescriptionObject) {
         Long doctorId = DoctorService.getCurrentLoggedInDoctor().getId();
@@ -151,7 +216,13 @@ public class DoctorController {
             return new ResponseEntity<>(message, HttpStatus.OK);
         }
     }
-
+    /**
+     * Endpoint for deleting a prescription by its ID for a specific patient under the current doctor.
+     *
+     * @param patientId      The ID of the patient for whom the prescription belongs.
+     * @param prescriptionId The ID of the prescription to delete.
+     * @return A ResponseEntity indicating success or not found along with a message and data.
+     */
     @DeleteMapping(path = "/patients/{patientId}/prescriptions/{prescriptionId}")
     public ResponseEntity<?>  deletePrescriptionById(@PathVariable(value="patientId") Long patientId, @PathVariable(value="prescriptionId") Long prescriptionId) {
         Long doctorId = DoctorService.getCurrentLoggedInDoctor().getId();
