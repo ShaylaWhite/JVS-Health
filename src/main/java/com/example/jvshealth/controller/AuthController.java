@@ -14,6 +14,12 @@ import java.util.Optional;
 
 import java.util.HashMap;
 
+/**
+ * The AuthController class handles authentication operations for doctors in the JvsHealth application.
+ *
+ * @RestController indicates that this class is a Spring REST Controller.
+ * @RequestMapping specifies the base URL path for all endpoints in this controller.
+ */
 @RestController
 @RequestMapping(path = "/auth/doctors/")    // http://localhost:9092/auth
 public class AuthController {
