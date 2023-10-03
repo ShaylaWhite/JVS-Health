@@ -25,7 +25,11 @@ import java.util.HashMap;
 public class AuthController {
 
     private DoctorService doctorService;
-
+    /**
+     * Constructor-based autowiring of the DoctorService dependency.
+     *
+     * @param doctorService The DoctorService implementation to be injected.
+     */
     @Autowired
     public void setDoctorService(DoctorService doctorService) {
         this.doctorService = doctorService;
