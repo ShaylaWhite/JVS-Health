@@ -38,14 +38,24 @@ public class AuthController {
     static HashMap<String, Object> message = new HashMap<>();
 
 //CREATE USER
-
+    /**
+     * Endpoint for registering a new doctor.
+     *
+     * @param doctorObject The Doctor object representing the doctor to be registered.
+     * @return The registered Doctor object.
+     */
     @PostMapping("/register") // http://localhost:9092/auth/doctors/register/
     public Doctor createDoctor(@RequestBody Doctor doctorObject) {
         return doctorService.createDoctor(doctorObject);
     }
-
-
-// LOGIN USER (POST)
+//LOGIN USER (Post)
+    /**
+     * Endpoint for authenticating and logging in a doctor.
+     *
+     * @param loginRequest The LoginRequest object containing login credentials.
+     * @return A ResponseEntity containing a LoginResponse with a JWT token upon successful authentication.
+     *         Returns UNAUTHORIZED status with an error message if authentication fails.
+     */
     @PostMapping(path = "/login/") // http://localhost:9092/auth/doctors/login/
     public ResponseEntity<LoginResponse> loginUser(@RequestBody LoginRequest loginRequest) {
         Optional<String> jwtToken = doctorService.loginDoctor(loginRequest);
