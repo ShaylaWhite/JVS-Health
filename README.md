@@ -211,11 +211,18 @@ Fields:
 
 <img src="/JVS Health.png" alt="JVS Health ERD Diagram" title="JVS Health ERD Diagram">
 
-## Unsolved Problems and Hurdles
+## Hurdles
 
-# Annotations
+
+
+## Annotations
 
 How to implement Many to Many Tables
 - https://www.baeldung.com/jpa-many-to-many
 
+
+## Acknowledgments
+We would like to express our gratitude to the following individuals for their invaluable assistance and guidance throughout this project:
+
+- [Suresh Melvin Sigera's GitHub Profile](https://git.generalassemb.ly/sureshmelvinsigera) - Suresh provided essential support when we faced challenges in implementing testing with Mock MVC. He provide key details and gudiance about how to mock a logged in user properly. 
 
