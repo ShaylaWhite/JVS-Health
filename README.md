@@ -212,7 +212,7 @@ Fields:
 
 # ERD Diagram
 
-<img src="/JVS Health.png" alt="JVS Health ERD Diagram" title="JVS Health ERD Diagram">
+<img src="/JVS Health (1).png" alt="JVS Health ERD Diagram" title="JVS Health ERD Diagram">
 
 ## Challenges Faced
 - Mock MVC Challenges: Initially, none of our tests were passing due to issues in our test implementation with Mock MVC. We had to create a mock MVC user to resolve this.
