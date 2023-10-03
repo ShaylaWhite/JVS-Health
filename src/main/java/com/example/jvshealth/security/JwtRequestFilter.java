@@ -21,18 +21,28 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
     Logger logger = Logger.getLogger(JwtRequestFilter.class.getName());
 
-
     @Autowired
     private MyDoctorDetailsService myDoctorDetailsService;
 
     @Autowired
     private JWTUtils jwtUtils;
+
+    /**
+     * Set the JWT utility class.
+     *
+     * @param jwtUtils The JWT utility class to set.
+     */
     @Autowired
     public void setJwtUtils(JWTUtils jwtUtils) {
         this.jwtUtils = jwtUtils;
     }
 
-
+    /**
+     * Parse the JWT token from the request's Authorization header.
+     *
+     * @param request The HTTP request.
+     * @return The JWT token or null if not found.
+     */
     private String parseJwt(HttpServletRequest request) {
         String headerAuth = request.getHeader("Authorization");
         if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer ")) {
@@ -40,7 +50,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         }
         return null;
     }
-    // Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXJlc2gyQGdhLmNvbSIsImlhdCI6MTY5NDgwMDAzNiwiZXhwIjoxNjk0ODg2NDM2fQ.z3smvkvDJqOYz7699UjvH5JQ51MuWL-KXffegc1UxWU
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
