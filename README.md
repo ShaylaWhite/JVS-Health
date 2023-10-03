@@ -214,9 +214,15 @@ Fields:
 
 <img src="/JVS Health.png" alt="JVS Health ERD Diagram" title="JVS Health ERD Diagram">
 
-## Hurdles
+## Challenges Faced
+- Mock MVC Challenges: Initially, none of our tests were passing due to issues in our test implementation with Mock MVC. We had to create a mock MVC user to resolve this.
+- Method Naming Typo: A typo in the naming of a method within the DocService class resulted in 2 hours of unnecessary debugging.
 
-
+## Key Achievements
+- Early Project Completion: We successfully completed the project ahead of schedule, allowing us more time for refinement.
+- Hands-on Collaboration: We had extensive hands-on experience with both driver and navigator roles. This helped us improve our soft skills and become more proficient in discussing and coding together.
+- Enhanced Java and Spring Boot Skills: As a group, we have become more comfortable and confident in using Java and Spring Boot.
+- Effective Team Chemistry: We fostered a great team chemistry, creating an atmosphere where everyone's opinions and ideas were not only heard but also considered.
 
 ## Annotations
 
