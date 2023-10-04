@@ -159,13 +159,14 @@ The business logic for the JVS-Health API, which includes key functionalities fo
 - Access control is implemented to ensure Doctors can only manage their own patients and prescriptions.
 
 ## Authentication and Security
+The JVS-Health API ensures data privacy, access control, and a secure environment for healthcare providers to manage medical information efficiently. It enables Doctors to register, authenticate, manage patients, and create and manage prescriptions for their patients while maintaining the confidentiality and integrity of the medical data.
 
 - Authentication is performed using JWT (JSON Web Tokens) to ensure secure access to protected endpoints.
 - Passwords are securely hashed and stored in the database.
 - JWT tokens are generated upon successful login and must be included in the headers of protected API requests for authorization.
 - A custom user details service and authentication filter are implemented to handle user authentication.
 
-The JVS-Health API ensures data privacy, access control, and a secure environment for healthcare providers to manage medical information efficiently. It enables Doctors to register, authenticate, manage patients, and create and manage prescriptions for their patients while maintaining the confidentiality and integrity of the medical data.
+
 
 
 # API Endpoints
