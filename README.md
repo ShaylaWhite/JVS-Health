@@ -236,3 +236,8 @@ We would like to express our gratitude to the following individuals for their in
 
 - [Suresh Melvin Sigera's GitHub Profile](https://git.generalassemb.ly/sureshmelvinsigera) - Suresh provided essential support when we faced challenges in implementing testing with Mock MVC. He provides key details and guidance about how to mock a logged-in user properly. 
 
+## Contributors
+
+- [Shayla White](https://github.com/ShaylaWhite)
+- [Merrill Huang](https://github.com/merrillhuang)
+- [Ariadna Vanegas-Rubio](https://github.com/avrubio)
