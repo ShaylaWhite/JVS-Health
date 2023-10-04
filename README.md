@@ -223,7 +223,7 @@ Fields:
 - Early Project Completion: We successfully completed the project ahead of schedule, allowing us more time for refinement.
 - Hands-on Collaboration: We had extensive hands-on experience with both driver and navigator roles. This helped us improve our soft skills and become more proficient in discussing and coding together.
 - Enhanced Java and Spring Boot Skills: As a group, we have become more comfortable and confident in using Java and Spring Boot.
-- Effective Team Chemistry: We fostered a great team chemistry, creating an atmosphere where everyone's opinions and ideas were not only heard but also considered.
+- Effective Team Chemistry: We fostered great team chemistry, creating an atmosphere where everyone's opinions and ideas were not only heard but also considered.
 
 ## Annotations
 
@@ -234,5 +234,5 @@ How to implement Many to Many Tables
 ## Acknowledgments
 We would like to express our gratitude to the following individuals for their invaluable assistance and guidance throughout this project:
 
-- [Suresh Melvin Sigera's GitHub Profile](https://git.generalassemb.ly/sureshmelvinsigera) - Suresh provided essential support when we faced challenges in implementing testing with Mock MVC. He provide key details and gudiance about how to mock a logged in user properly. 
+- [Suresh Melvin Sigera's GitHub Profile](https://git.generalassemb.ly/sureshmelvinsigera) - Suresh provided essential support when we faced challenges in implementing testing with Mock MVC. He provides key details and guidance about how to mock a logged-in user properly. 
 
