@@ -74,7 +74,7 @@ As a Provider, I want to assign prescriptions from the database to my patients.
 - Upon successful assignment, the prescription's availability status changes, and it's associated with the patient.
 
 
-### User Story 6: Doctor Update Prescription's Information
+### User Story 5: Doctor Update Prescription's Information
 
  As a Provider, I want to manage patients in the system, including adding, updating, and deleting prescription information.
 
